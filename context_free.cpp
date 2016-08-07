@@ -16,14 +16,12 @@ Symbol::Terminal(string const & repr) {
 
 Symbol
 Symbol::Empty() {
-  return Symbol("empty", true);
+  return Symbol::Terminal("empty");
 }
 
 
 Symbol::operator Symbol_String() const {
-  Symbol_String sym_str;
-  sym_str.push_back(*this);
-  return sym_str;
+  return (Symbol_String) {*this};
 }
 
 
@@ -42,17 +40,17 @@ operator+(Symbol_String const & lhs, Symbol_String const & rhs) {
 
 
 // Alternatives
-vector<Symbol_String>
+Symbol_String_Alternatives
 operator|(Symbol_String const & lhs, Symbol_String const & rhs) {
-  vector<Symbol_String> result;
+  Symbol_String_Alternatives result;
   result.push_back(lhs);
   result.push_back(rhs);
   return result;
 }
 
-vector<Symbol_String>
-operator|(vector<Symbol_String> const & lhs, Symbol_String const & rhs) {
-  vector<Symbol_String> result(lhs);
+Symbol_String_Alternatives
+operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs) {
+  Symbol_String_Alternatives result(lhs);
   result.push_back(rhs);
   return result;
 }
@@ -75,7 +73,7 @@ operator<<(ostream & os, Symbol_String const & symbol_string) {
   return os;
 }
 
-ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec) {
+ostream & operator<<(ostream & os, Symbol_String_Alternatives const & symbol_string_vec) {
   string separator = "";
   for (auto sym_str : symbol_string_vec) {
     os << separator << sym_str;

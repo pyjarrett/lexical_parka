@@ -13,7 +13,7 @@ using std::vector;
 class Symbol;
 using Symbol_String = vector<Symbol>;
 using Symbol_Set = std::set<Symbol>;
-
+using Symbol_String_Alternatives = vector<Symbol_String>;
 
 /**
  * A lightweight, immutable symbol type.
@@ -40,11 +40,6 @@ public:
   bool is_terminal() const { return is_terminal_; }
 
   /**
-   * Comparison operator to allow storage of Symbol inside of std::set<>
-   */
-  bool operator<(Symbol const & other) const;
-
-  /**
    * Quick way to allow conversion into `Symbol_String` for Symbol's to
    * simplify the creation of `operator+` and `operator|` methods.
    *
@@ -58,7 +53,7 @@ public:
 // In line creation of grammer helpers.
 Symbol operator"" _sym(char const * symbol, unsigned long);
 Symbol_String operator+(Symbol_String const & lhs, Symbol_String const & rhs);
-vector<Symbol_String> operator|(Symbol_String const & lhs, Symbol_String const & rhs);
+Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String const & rhs);
 vector<Symbol_String> operator|(vector<Symbol_String> const & lhs, Symbol_String const & rhs);
 
 
