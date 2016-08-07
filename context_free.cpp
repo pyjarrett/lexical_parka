@@ -58,16 +58,10 @@ operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs) {
 
 // Printing functions
 ostream &
-operator<<(ostream & os, Symbol const & symbol) {
-  os << symbol.repr();
-  return os;
-}
-
-ostream &
 operator<<(ostream & os, Symbol_String const & symbol_string) {
   string separator = "";
   for (auto sym : symbol_string) {
-    os << separator << sym;
+    os << separator << sym.repr();
     separator = " ";
   }
   return os;

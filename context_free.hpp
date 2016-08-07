@@ -60,7 +60,6 @@ vector<Symbol_String> operator|(vector<Symbol_String> const & lhs, Symbol_String
 // Printing functions
 using std::ostream;
 
-ostream & operator<<(ostream & os, Symbol const & symbol);
 ostream & operator<<(ostream & os, Symbol_String const & symbol_string);
 ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec);
 
