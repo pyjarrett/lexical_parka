@@ -63,22 +63,4 @@ using std::ostream;
 ostream & operator<<(ostream & os, Symbol_String const & symbol_string);
 ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec);
 
-
-/**
- * Defines grammatical productions of the type A -> B.
- *
- * Elements in B take the following form:
- * terminals - atomic symbol
- * literals - literal strings
- * non-terminals - symbols which produce other symbols
- * | - "or" conditions, which are alternative productions
- * epsilon - the empty production
- */
-class Grammar {
-
-public:
-
-
-};
-
 } // namespace context_free

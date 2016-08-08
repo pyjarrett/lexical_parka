@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "context_free.hpp"
+#include "symbol.hpp"
 using namespace context_free;
 
 #include <iostream>
@@ -16,6 +16,8 @@ string as_string(T const & value) {
   ss << value;
   return ss.str();
 }
+
+vector<int> my_vec;
 
 TEST(First_Test, Examples) {
   Symbol e = Symbol::Non_Terminal("E");

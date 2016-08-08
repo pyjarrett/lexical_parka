@@ -1,0 +1,3 @@
+# Ignores bazel build symlinks
+bazel-*
+*.swp

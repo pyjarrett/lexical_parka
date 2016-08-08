@@ -1,4 +1,4 @@
-#include "context_free.hpp"
+#include "symbol.hpp"
 
 #include <iostream>
 
