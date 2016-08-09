@@ -39,6 +39,11 @@ public:
   string repr() const { return repr_; }
   bool is_terminal() const { return is_terminal_; }
 
+  // "Less than" for use in std::set and std::map
+  bool operator<(Symbol const & other) const {
+      return repr_ < other.repr_;
+  }
+
   /**
    * Quick way to allow conversion into `Symbol_String` for Symbol's to
    * simplify the creation of `operator+` and `operator|` methods.
