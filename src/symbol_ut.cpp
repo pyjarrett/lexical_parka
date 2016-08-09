@@ -1,21 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "symbol.hpp"
+#include "streams.hpp"
 using namespace context_free;
-
-#include <iostream>
-#include <sstream>
-#include <string>
-using std::cout;
-using std::string;
-using std::stringstream;
-
-template<typename T>
-string as_string(T const & value) {
-  stringstream ss;
-  ss << value;
-  return ss.str();
-}
 
 vector<int> my_vec;
 

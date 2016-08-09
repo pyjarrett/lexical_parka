@@ -3,6 +3,8 @@ cc_test(
   deps = ["@gtest//:lib"],
   srcs = ["symbol.cpp",
          "symbol.hpp",
+         "streams.hpp",
+         "streams.cpp",
          "symbol_ut.cpp"],
   copts = ["-Iexternal/gtest/include"],
   size = "small",

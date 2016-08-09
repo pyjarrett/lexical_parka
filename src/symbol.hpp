@@ -57,10 +57,4 @@ Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String co
 vector<Symbol_String> operator|(vector<Symbol_String> const & lhs, Symbol_String const & rhs);
 
 
-// Printing functions
-using std::ostream;
-
-ostream & operator<<(ostream & os, Symbol_String const & symbol_string);
-ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec);
-
 } // namespace context_free
