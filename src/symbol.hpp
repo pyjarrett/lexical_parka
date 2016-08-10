@@ -44,6 +44,10 @@ public:
       return repr_ < other.repr_;
   }
 
+  bool operator==(Symbol const & other) const {
+    return repr_ == other.repr_ and is_terminal_ == other.is_terminal_;
+  }
+
   /**
    * Quick way to allow conversion into `Symbol_String` for Symbol's to
    * simplify the creation of `operator+` and `operator|` methods.

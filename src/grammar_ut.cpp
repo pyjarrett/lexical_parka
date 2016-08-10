@@ -18,6 +18,24 @@ TEST(Grammar_Test, Add_Multiple_Alternative_Production) {
   EXPECT_EQ("B C | D | E F", as_string(grammar["A"_sym]));
 }
 
+TEST(Grammar_Has_Empty_Production_Test, Single_Empty_Symbol) {
+  Grammar grammar;
+  grammar["A"_sym] = {Symbol::empty()};
+  ASSERT_TRUE(grammar.has_empty_production("A"_sym));
+}
+
+TEST(Grammar_Has_Empty_Production_Test, Single_Terminal) {
+  Grammar grammar;
+  grammar["A"_sym] = {"B"_sym};
+  ASSERT_FALSE(grammar.has_empty_production("A"_sym));
+}
+
+TEST(Grammar_Has_Empty_Production_Test, Terminal_Or_Empty) {
+  Grammar grammar;
+  grammar["A"_sym] = {"B"_sym | Symbol::empty()};
+  ASSERT_TRUE(grammar.has_empty_production("A"_sym));
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
