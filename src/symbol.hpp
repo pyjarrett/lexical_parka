@@ -28,13 +28,13 @@ class Symbol {
   }
 
 public:
-  static Symbol Non_Terminal(string const & repr);
-  static Symbol Terminal(string const & repr);
+  static Symbol non_terminal(string const & repr);
+  static Symbol terminal(string const & repr);
 
   /**
    * The "empty" (epsilon) symbol.
    */
-  static Symbol Empty();
+  static Symbol empty();
 
   string repr() const { return repr_; }
   bool is_terminal() const { return is_terminal_; }

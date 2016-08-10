@@ -7,13 +7,13 @@ using namespace context_free;
 vector<int> my_vec;
 
 TEST(First_Test, Examples) {
-  Symbol e = Symbol::Non_Terminal("E");
-  Symbol e_ = Symbol::Non_Terminal("E'");
-  Symbol t = Symbol::Non_Terminal("T");
-  Symbol t_ = Symbol::Non_Terminal("T'");
-  Symbol f = Symbol::Non_Terminal("F");
+  Symbol e = Symbol::non_terminal("E");
+  Symbol e_ = Symbol::non_terminal("E'");
+  Symbol t = Symbol::non_terminal("T");
+  Symbol t_ = Symbol::non_terminal("T'");
+  Symbol f = Symbol::non_terminal("F");
   Symbol identifier = "id"_sym;
-  Symbol empty = Symbol::Empty();
+  Symbol empty = Symbol::empty();
 
   ASSERT_EQ("E", as_string(e));
   ASSERT_EQ("E F", as_string(e + f));

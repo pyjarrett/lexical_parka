@@ -5,18 +5,18 @@
 namespace context_free {
 
 Symbol
-Symbol::Non_Terminal(string const & repr) {
+Symbol::non_terminal(string const & repr) {
   return Symbol(repr, false);
 }
 
 Symbol
-Symbol::Terminal(string const & repr) {
+Symbol::terminal(string const & repr) {
   return Symbol(repr, true);
 }
 
 Symbol
-Symbol::Empty() {
-  return Symbol::Terminal("empty");
+Symbol::empty() {
+  return Symbol::terminal("empty");
 }
 
 
@@ -28,7 +28,7 @@ Symbol::operator Symbol_String() const {
 // In Line grammar creation
 Symbol
 operator"" _sym(char const * symbol, unsigned long) {
-  return Symbol::Terminal(symbol);
+  return Symbol::terminal(symbol);
 }
 
 Symbol_String

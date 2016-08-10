@@ -8,7 +8,7 @@ using namespace context_free;
 
 TEST(Grammar_Test, Add_Empty_Production) {
   Grammar grammar;
-  grammar["A"_sym] = {Symbol::Empty()};
+  grammar["A"_sym] = {Symbol::empty()};
   EXPECT_EQ("empty", as_string(grammar["A"_sym]));
 }
 
