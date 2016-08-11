@@ -85,4 +85,9 @@ namespace context_free {
     }
     return empty_strings;
   }
+
+  bool
+  Grammar::is_terminal(Symbol const & symbol) const {
+    return productions.find(symbol) == productions.end();
+  }
 }

@@ -86,6 +86,20 @@ TEST(Grammar_Has_Empty_Production_Test, Multiple_Symbol_Strings) {
   ASSERT_FALSE(grammar.has_empty_production("E"_sym));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Terminal checks
+////////////////////////////////////////////////////////////////////////////////
+TEST(Grammar_Terminal_Test, Terminal_Test) {
+  Grammar grammar;
+  grammar["A"_sym] = {"B"_sym};
+  grammar["B"_sym] = {Symbol::empty()};
+  grammar["C"_sym] = {"A"_sym};
+
+  ASSERT_FALSE(grammar.is_terminal("A"_sym));
+  ASSERT_FALSE(grammar.is_terminal("B"_sym));
+  ASSERT_FALSE(grammar.is_terminal("C"_sym));
+  ASSERT_TRUE(grammar.is_terminal("D"_sym));
+}
 
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);

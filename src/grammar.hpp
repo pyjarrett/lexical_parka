@@ -17,6 +17,8 @@ public:
   bool is_empty_production(Symbol_String const & symbol_string) const;
   bool has_empty_production(Symbol const & sym) const;
   Symbol_Set empty_producing_symbols() const;
+
+  bool is_terminal(Symbol const & symbol) const;
 };
 
 
