@@ -22,22 +22,18 @@ class Symbol {
   string repr_;
   bool is_terminal_;
 
-  Symbol(string repr, bool is_terminal)
-    : repr_(repr), is_terminal_(is_terminal)
+  explicit Symbol(string repr)
+    : repr_(repr)
   {
   }
 
 public:
-  static Symbol non_terminal(string const & repr);
-  static Symbol terminal(string const & repr);
-
   /**
    * The "empty" (epsilon) symbol.
    */
   static Symbol empty();
 
   string repr() const { return repr_; }
-  bool is_terminal() const { return is_terminal_; }
 
   // "Less than" for use in std::set and std::map
   bool operator<(Symbol const & other) const {
@@ -56,6 +52,9 @@ public:
    * Symbol types for | and + operators.
    */
   operator Symbol_String() const;
+
+  // Allows use of Symbol() constructor, while hiding it from other clients.
+  friend Symbol operator"" _sym(char const * symbol, unsigned long);
 };
 
 

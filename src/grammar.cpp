@@ -55,9 +55,6 @@ namespace context_free {
 
     // Each time around this loop should get quicker has direct productions of
     // empty are removed.
-    //
-    // TODO: Could this be faster if a check was added to remove rules that
-    // produce all terminals which are not empty?
     while (progress_made) {
       next_possibles.clear();
       progress_made = false;
