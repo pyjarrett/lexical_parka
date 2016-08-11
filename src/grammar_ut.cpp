@@ -6,6 +6,9 @@
 #include "symbol.hpp"
 using namespace context_free;
 
+////////////////////////////////////////////////////////////////////////////////
+// Basic production assignment tests.
+////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Test, Add_Empty_Production) {
   Grammar grammar;
   grammar["A"_sym] = {Symbol::empty()};
@@ -18,6 +21,9 @@ TEST(Grammar_Test, Add_Multiple_Alternative_Production) {
   EXPECT_EQ("B C | D | E F", as_string(grammar["A"_sym]));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Has_Empty_Production_Test
+////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Has_Empty_Production_Test, Single_Empty_Symbol) {
   Grammar grammar;
   grammar["A"_sym] = {Symbol::empty()};
