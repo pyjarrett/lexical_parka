@@ -19,6 +19,9 @@ public:
   Symbol_Set empty_producing_symbols() const;
 
   bool is_terminal(Symbol const & symbol) const;
+
+  std::map<Symbol, Symbol_Set> first() const;
+  Symbol_Set first(Symbol const & symbol) const;
 };
 
 

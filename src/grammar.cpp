@@ -90,4 +90,68 @@ namespace context_free {
   Grammar::is_terminal(Symbol const & symbol) const {
     return productions.find(symbol) == productions.end();
   }
+
+  /**
+   * Produces the set of FIRST(X).
+   */
+  std::map<Symbol, Symbol_Set>
+  Grammar::first() const
+  {
+    std::map<Symbol, Symbol_Set> first_map;
+
+    bool progress_made = true;
+    while (progress_made) {
+      progress_made = false;
+
+      // Examine all production rules.
+      for (auto alternatives : productions) {
+        auto const head_symbol = alternatives.first;
+
+        // Loop through each production body for the head symbol.
+        for (auto production : alternatives.second) {
+          // X can produce empty, so add it to FIRST
+          if (has_empty_production(head_symbol)) {
+            if (first_map[head_symbol].count(Symbol::empty()) == 0) {
+              first_map[head_symbol].insert(Symbol::empty());
+              progress_made = true;
+            }
+          }
+
+          // Add first of each symbol, until finding one which blocks the empty
+          // prefix.
+          for (auto const production_symbol : production) {
+            // Adds the symbol in the rule as a terminal (otherwise we have no
+            // idea of terminals).
+            if (is_terminal(production_symbol)) {
+              if (first_map.find(production_symbol) == first_map.end()) {
+                first_map[production_symbol].insert(production_symbol);
+                progress_made = true;
+              }
+            }
+
+            // Adds the next symbol to FIRST of the current symbol.
+            for (auto const & other : first_map[production_symbol]) {
+              if (first_map[head_symbol].count(other) == 0) {
+                first_map[head_symbol].insert(other);
+                progress_made = true;
+              }
+            }
+
+            // The symbol has no empty productions, so further symbols cannot
+            // appear in first.
+            if (first_map[production_symbol].count(Symbol::empty()) == 0) {
+              break;
+            }
+          }
+        }
+      }
+    }
+    return first_map;
+  }
+
+  Symbol_Set
+  Grammar::first(Symbol const & symbol) const
+  {
+    return first()[symbol];
+  }
 }

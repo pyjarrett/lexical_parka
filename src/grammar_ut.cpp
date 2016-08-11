@@ -101,6 +101,24 @@ TEST(Grammar_Terminal_Test, Terminal_Test) {
   ASSERT_TRUE(grammar.is_terminal("D"_sym));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// FIRST(X) TESTS
+////////////////////////////////////////////////////////////////////////////////
+TEST(Grammar_First_Test, Example_Test) {
+  Grammar grammar;
+  grammar["E"_sym] = {"T"_sym + "E'"_sym};
+  grammar["E'"_sym] = {"+"_sym + "T"_sym + "E'"_sym | Symbol::empty()};
+  grammar["T"_sym] = {"F"_sym + "T'"_sym};
+  grammar["T'"_sym] = {"*"_sym + "F"_sym + "T'"_sym | Symbol::empty()};
+  grammar["F"_sym] = {"("_sym + "E"_sym + ")"_sym | "id"_sym};
+
+  ASSERT_TRUE(grammar.first("F"_sym) == Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_TRUE(grammar.first("T"_sym) == Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_TRUE(grammar.first("E"_sym) == Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_TRUE(grammar.first("E'"_sym) == Symbol_Set({"+"_sym, Symbol::empty()}));
+  ASSERT_TRUE(grammar.first("T'"_sym) == Symbol_Set({"*"_sym, Symbol::empty()}));
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

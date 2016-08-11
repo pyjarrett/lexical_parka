@@ -20,7 +20,6 @@ using Symbol_String_Alternatives = vector<Symbol_String>;
  */
 class Symbol {
   string repr_;
-  bool is_terminal_;
 
   explicit Symbol(string repr)
     : repr_(repr)
@@ -41,7 +40,7 @@ public:
   }
 
   bool operator==(Symbol const & other) const {
-    return repr_ == other.repr_ and is_terminal_ == other.is_terminal_;
+    return repr_ == other.repr_;
   }
 
   /**
