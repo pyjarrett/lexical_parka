@@ -11,6 +11,13 @@ namespace context_free {
       return symbol_string.size() == 1 && symbol_string[0] == Symbol::empty();
   }
 
+  bool
+  Grammar::has_empty_production(Symbol const & symbol ) const
+  {
+    Symbol_Set empty_production_set = empty_producing_symbols();
+    return empty_production_set.find(symbol) != empty_production_set.end();
+  }
+
   /**
    * Returns the set of symbols which result in an empty production either
    * directly, or indirectly.
@@ -81,13 +88,4 @@ namespace context_free {
     }
     return empty_strings;
   }
-
-  bool
-  Grammar::has_empty_production(Symbol const & symbol ) const
-  {
-    Symbol_Set empty_production_set = empty_producing_symbols();
-    return empty_production_set.find(symbol) != empty_production_set.end();
-  }
-
-
 }
