@@ -107,16 +107,16 @@ namespace context_free {
       for (auto alternatives : productions) {
         auto const head_symbol = alternatives.first;
 
+        // X can produce empty, so add it to FIRST
+        if (has_empty_production(head_symbol)) {
+          if (first_map[head_symbol].count(Symbol::empty()) == 0) {
+            first_map[head_symbol].insert(Symbol::empty());
+            progress_made = true;
+          }
+        }
+
         // Loop through each production body for the head symbol.
         for (auto production : alternatives.second) {
-          // X can produce empty, so add it to FIRST
-          if (has_empty_production(head_symbol)) {
-            if (first_map[head_symbol].count(Symbol::empty()) == 0) {
-              first_map[head_symbol].insert(Symbol::empty());
-              progress_made = true;
-            }
-          }
-
           // Add first of each symbol, until finding one which blocks the empty
           // prefix.
           for (auto const production_symbol : production) {
