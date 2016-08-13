@@ -165,4 +165,30 @@ namespace context_free {
   {
     return first()[symbol];
   }
+
+  Symbol_Set
+  Grammar::first(Symbol_String const & symbol_string) const {
+    Symbol_Set result;
+    bool all_have_empty_in_first = true;
+    for (auto const & symbol : symbol_string) {
+      auto const & symbol_first = first(symbol);
+      result.insert(symbol_first.begin(), symbol_first.end());
+
+      // Current symbol cannot result in empty, so further symbols cannot affect
+      // FIRST for this string
+      if (symbol_first.find(Symbol::empty()) == symbol_first.end()) {
+        all_have_empty_in_first = false;
+        break;
+      }
+    }
+
+    // Remove empty if it was added and all symbols are not really empty.
+    if (all_have_empty_in_first) {
+      result.insert(Symbol::empty());
+    }
+    else {
+      result.erase(Symbol::empty());
+    }
+    return result;
+  }
 }

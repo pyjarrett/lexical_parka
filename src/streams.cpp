@@ -27,4 +27,16 @@ ostream & operator<<(
   return os;
 }
 
+ostream & operator<<(
+  ostream & os,
+  Symbol_Set const & symbol_set)
+{
+  string separator = "";
+  for (auto const & symbol : symbol_set) {
+    std::cout << separator << symbol;
+    separator = " ";
+  }
+  return os;
+}
+
 } // namespace context_free

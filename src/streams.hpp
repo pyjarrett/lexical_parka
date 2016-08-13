@@ -22,5 +22,6 @@ using std::ostream;
 
 ostream & operator<<(ostream & os, Symbol_String const & symbol_string);
 ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec);
+ostream & operator<<(ostream & os, Symbol_Set const & symbol_set);
 
 } // namespace context_free

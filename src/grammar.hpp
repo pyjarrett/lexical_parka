@@ -24,6 +24,7 @@ public:
 
   std::map<Symbol, Symbol_Set> first() const;
   Symbol_Set first(Symbol const & symbol) const;
+  Symbol_Set first(Symbol_String const & symbol_string) const;
 };
 
 

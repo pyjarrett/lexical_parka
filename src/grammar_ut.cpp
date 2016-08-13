@@ -150,6 +150,13 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_Test) {
   ASSERT_TRUE(grammar.first("T'"_sym) == Symbol_Set({"*"_sym, Symbol::empty()}));
 }
 
+TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_String_Test) {
+  ASSERT_EQ(grammar.first("E'"_sym + "T'"_sym),
+      Symbol_Set({"+"_sym, "*"_sym, Symbol::empty()}));
+  ASSERT_EQ(grammar.first("E'"_sym + "T'"_sym + "F"_sym),
+      Symbol_Set({"+"_sym, "*"_sym, "("_sym, "id"_sym}));
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
