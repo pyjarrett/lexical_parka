@@ -6,6 +6,34 @@
 #include "symbol.hpp"
 using namespace context_free;
 
+class Add_Multiply_Grammar_Test : public ::testing::Test {
+protected:
+  Grammar grammar;
+
+  virtual void SetUp() {
+    grammar["E"_sym] = {"E"_sym + "+"_sym + "T"_sym | "T"_sym};
+    grammar["T"_sym] = {"T"_sym + "*"_sym + "F"_sym | "F"_sym};
+    grammar["F"_sym] = {"("_sym + "E"_sym + ")"_sym | "id"_sym};
+  }
+
+  virtual void TearDown() {}
+};
+
+class Non_Left_Recursive_Add_Multiply_Grammar_Test : public ::testing::Test {
+protected:
+  Grammar grammar;
+
+  virtual void SetUp() {
+    grammar["E"_sym] = {"T"_sym + "E'"_sym};
+    grammar["E'"_sym] = {"+"_sym + "T"_sym + "E'"_sym | Symbol::empty()};
+    grammar["T"_sym] = {"F"_sym + "T'"_sym};
+    grammar["T'"_sym] = {"*"_sym + "F"_sym + "T'"_sym | Symbol::empty()};
+    grammar["F"_sym] = {"("_sym + "E"_sym + ")"_sym | "id"_sym};
+  }
+
+  virtual void TearDown() {}
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Basic production assignment tests.
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,14 +132,17 @@ TEST(Grammar_Terminal_Test, Terminal_Test) {
 ////////////////////////////////////////////////////////////////////////////////
 // FIRST(X) TESTS
 ////////////////////////////////////////////////////////////////////////////////
-TEST(Grammar_First_Test, Example_Test) {
-  Grammar grammar;
-  grammar["E"_sym] = {"T"_sym + "E'"_sym};
-  grammar["E'"_sym] = {"+"_sym + "T"_sym + "E'"_sym | Symbol::empty()};
-  grammar["T"_sym] = {"F"_sym + "T'"_sym};
-  grammar["T'"_sym] = {"*"_sym + "F"_sym + "T'"_sym | Symbol::empty()};
-  grammar["F"_sym] = {"("_sym + "E"_sym + ")"_sym | "id"_sym};
+TEST_F(Add_Multiply_Grammar_Test, First_Test) {
+  ASSERT_EQ(grammar.first("E"_sym), Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_EQ(grammar.first("T"_sym), Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_EQ(grammar.first("F"_sym), Symbol_Set({"("_sym, "id"_sym}));
+  ASSERT_EQ(grammar.first("*"_sym), Symbol_Set({"*"_sym}));
+  ASSERT_EQ(grammar.first("+"_sym), Symbol_Set({"+"_sym}));
+  ASSERT_EQ(grammar.first(")"_sym), Symbol_Set({")"_sym}));
+  ASSERT_EQ(grammar.first("("_sym), Symbol_Set({"("_sym}));
+}
 
+TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_Test) {
   ASSERT_TRUE(grammar.first("F"_sym) == Symbol_Set({"("_sym, "id"_sym}));
   ASSERT_TRUE(grammar.first("T"_sym) == Symbol_Set({"("_sym, "id"_sym}));
   ASSERT_TRUE(grammar.first("E"_sym) == Symbol_Set({"("_sym, "id"_sym}));

@@ -91,6 +91,25 @@ namespace context_free {
     return productions.find(symbol) == productions.end();
   }
 
+  void
+  Grammar::add_terminals_to_first(std::map<Symbol, Symbol_Set> & first_map) const
+  {
+    // Add all terminal symbols once and head of time since there aren't
+    // production rules for them.
+    for (auto const & alternatives : productions) {
+      for (auto const & production : alternatives.second) {
+        for (auto const & production_symbol : production) {
+            if (is_terminal(production_symbol)) {
+              // Prevent adding a symbol multiple times.
+              if (first_map.find(production_symbol) == first_map.end()) {
+                first_map[production_symbol].insert(production_symbol);
+              }
+            }
+        }
+      }
+    }
+  }
+
   /**
    * Produces the set of FIRST(X).
    */
@@ -98,13 +117,14 @@ namespace context_free {
   Grammar::first() const
   {
     std::map<Symbol, Symbol_Set> first_map;
+    add_terminals_to_first(first_map);
 
     bool progress_made = true;
     while (progress_made) {
       progress_made = false;
 
       // Examine all production rules.
-      for (auto alternatives : productions) {
+      for (auto const & alternatives : productions) {
         auto const head_symbol = alternatives.first;
 
         // X can produce empty, so add it to FIRST
@@ -122,12 +142,6 @@ namespace context_free {
           for (auto const production_symbol : production) {
             // Adds the symbol in the rule as a terminal (otherwise we have no
             // idea of terminals).
-            if (is_terminal(production_symbol)) {
-              if (first_map.find(production_symbol) == first_map.end()) {
-                first_map[production_symbol].insert(production_symbol);
-                progress_made = true;
-              }
-            }
 
             // Adds the next symbol to FIRST of the current symbol.
             for (auto const & other : first_map[production_symbol]) {

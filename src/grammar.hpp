@@ -9,6 +9,8 @@ namespace context_free {
 class Grammar {
   std::map<Symbol, Symbol_String_Alternatives> productions;
 
+  void add_terminals_to_first(std::map<Symbol, Symbol_Set> & first_map) const;
+
 public:
   Symbol_String_Alternatives & operator[](Symbol const & sym) {
     return productions[sym];
