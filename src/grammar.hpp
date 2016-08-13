@@ -16,7 +16,7 @@ public:
     return productions[sym];
   }
 
-  bool is_empty_production(Symbol_String const & symbol_string) const;
+  bool is_empty_body(Symbol_String const & symbol_string) const;
   bool has_empty_production(Symbol const & sym) const;
   Symbol_Set empty_producing_symbols() const;
 

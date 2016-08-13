@@ -6,7 +6,7 @@ namespace context_free {
   using Production = std::pair<Symbol, Symbol_String>;
 
   bool
-  Grammar::is_empty_production(Symbol_String const & symbol_string) const
+  Grammar::is_empty_body(Symbol_String const & symbol_string) const
   {
       return symbol_string.size() == 1 && symbol_string[0] == Symbol::empty();
   }
@@ -40,13 +40,13 @@ namespace context_free {
   Symbol_Set
   Grammar::empty_producing_symbols() const
   {
-    Symbol_Set empty_strings = {Symbol::empty()};
+    Symbol_Set result = {Symbol::empty()};
     vector<Production> current_possibles;
 
     // Initially populate the possible list with the grammar's productions.
-    for (auto alternatives : productions) {
-      for (auto production : alternatives.second) {
-        current_possibles.push_back({alternatives.first, production});
+    for (auto const & production : productions) {
+      for (auto const & body : production.second) {
+        current_possibles.push_back({production.first, body});
       }
     }
 
@@ -60,30 +60,30 @@ namespace context_free {
       progress_made = false;
 
       for (auto const & production : current_possibles) {
-        // Direction production of empty
-        if (is_empty_production(production.second)) {
-          empty_strings.insert(production.first);
+        // direction production of empty
+        if (is_empty_body(production.second)) {
+          result.insert(production.first);
           progress_made = true;
         }
         else {
-          bool all_empties = true;
+          bool all_body_symbols_produce_empty = true;
           for (auto const & symbol : production.second) {
-            if (empty_strings.count(symbol) == 0) {
-              all_empties = false;
+            if (result.count(symbol) == 0) {
+              all_body_symbols_produce_empty = false;
               next_possibles.push_back(production);
               break;
             }
           }
-          // All productions produce empty
-          if (all_empties) {
-            empty_strings.insert(production.first);
+          // all productions produce empty
+          if (all_body_symbols_produce_empty) {
+            result.insert(production.first);
             progress_made = true;
           }
         }
       }
       std::swap(current_possibles, next_possibles);
     }
-    return empty_strings;
+    return result;
   }
 
   bool
@@ -96,13 +96,13 @@ namespace context_free {
   {
     // Add all terminal symbols once and head of time since there aren't
     // production rules for them.
-    for (auto const & alternatives : productions) {
-      for (auto const & production : alternatives.second) {
-        for (auto const & production_symbol : production) {
-            if (is_terminal(production_symbol)) {
+    for (auto const & production : productions) {
+      for (auto const & alternative : production.second) {
+        for (auto const & body_symbol : alternative) {
+            if (is_terminal(body_symbol)) {
               // Prevent adding a symbol multiple times.
-              if (first_map.find(production_symbol) == first_map.end()) {
-                first_map[production_symbol].insert(production_symbol);
+              if (first_map.find(body_symbol) == first_map.end()) {
+                first_map[body_symbol].insert(body_symbol);
               }
             }
         }
@@ -123,37 +123,34 @@ namespace context_free {
     while (progress_made) {
       progress_made = false;
 
-      // Examine all production rules.
-      for (auto const & alternatives : productions) {
-        auto const head_symbol = alternatives.first;
+      for (auto const & production : productions) {
+        auto const & head = production.first;
 
         // X can produce empty, so add it to FIRST
-        if (has_empty_production(head_symbol)) {
-          if (first_map[head_symbol].count(Symbol::empty()) == 0) {
-            first_map[head_symbol].insert(Symbol::empty());
+        if (has_empty_production(head)) {
+          if (first_map[head].count(Symbol::empty()) == 0) {
+            first_map[head].insert(Symbol::empty());
             progress_made = true;
           }
         }
 
-        // Loop through each production body for the head symbol.
-        for (auto production : alternatives.second) {
-          // Add first of each symbol, until finding one which blocks the empty
+        // Loop through each body for the head symbol.
+        for (auto body : production.second) {
+          // Add FIRST of each symbol, until finding one which blocks the empty
           // prefix.
-          for (auto const production_symbol : production) {
-            // Adds the symbol in the rule as a terminal (otherwise we have no
-            // idea of terminals).
-
-            // Adds the next symbol to FIRST of the current symbol.
-            for (auto const & other : first_map[production_symbol]) {
-              if (first_map[head_symbol].count(other) == 0) {
-                first_map[head_symbol].insert(other);
+          for (auto const body_symbol : body) {
+            // Adds FIRST(body_symbol) to FIRST(head) since it can appear as the
+            // first non-empty symbol.
+            for (auto const & other : first_map[body_symbol]) {
+              if (first_map[head].count(other) == 0) {
+                first_map[head].insert(other);
                 progress_made = true;
               }
             }
 
-            // The symbol has no empty productions, so further symbols cannot
-            // appear in first.
-            if (first_map[production_symbol].count(Symbol::empty()) == 0) {
+            // The next symbol has no empty productions, so further symbols
+            // do not affect FIRST(head).
+            if (first_map[body_symbol].count(Symbol::empty()) == 0) {
               break;
             }
           }
