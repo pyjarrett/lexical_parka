@@ -259,12 +259,16 @@ namespace context_free {
       auto const & current_symbol = *it;
       ++it;
 
-      auto first_right_side = first(Symbol_String(it, body.end()));
+      if (is_terminal(current_symbol)) {
+        continue;
+      }
+
+      auto const first_right_side = first(Symbol_String(it, body.end()));
       auto & follow_a = follow_map[head];
       auto & follow_b = follow_map[current_symbol];
 
       // Adds all of FOLLOW(A) to FOLLOW(B)
-      if (first_right_side.erase(Symbol::empty()) > 0) {
+      if (first_right_side.count(Symbol::empty()) > 0) {
         auto const size_before_adding_follow_a = follow_b.size();
         follow_b.insert(follow_a.begin(), follow_a.end());
         progress_made = progress_made || (follow_b.size() != size_before_adding_follow_a);
@@ -272,6 +276,7 @@ namespace context_free {
 
       auto const size_before_adding_first_beta = follow_b.size();
       follow_b.insert(first_right_side.begin(), first_right_side.end());
+      follow_b.erase(Symbol::empty());
       progress_made = progress_made || (follow_b.size() != size_before_adding_first_beta);
     }
     return progress_made;
