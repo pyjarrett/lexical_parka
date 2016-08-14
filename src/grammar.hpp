@@ -12,9 +12,10 @@ class Grammar {
   void add_terminals_to_first(std::map<Symbol, Symbol_Set> & first_map) const;
 
 public:
-  Symbol_String_Alternatives & operator[](Symbol const & sym) {
-    return productions[sym];
-  }
+  void set_production(
+    Symbol const & head,
+    Symbol_String_Alternatives const & alternatives);
+  Symbol_String_Alternatives operator[](Symbol const & symbol) const;
 
   bool is_empty_body(Symbol_String const & symbol_string) const;
   bool has_empty_production(Symbol const & sym) const;

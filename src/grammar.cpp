@@ -5,6 +5,24 @@
 namespace context_free {
   using Production = std::pair<Symbol, Symbol_String>;
 
+  Symbol_String_Alternatives
+  Grammar::operator[](Symbol const & symbol) const
+  {
+    auto it = productions.find(symbol);
+    if (it != productions.end()) {
+      return (it->second);
+    }
+    return Symbol_String_Alternatives();
+  }
+
+  void
+  Grammar::set_production(
+    Symbol const & head,
+    Symbol_String_Alternatives const & alternatives)
+  {
+    productions[head] = alternatives;
+  }
+
   bool
   Grammar::is_empty_body(Symbol_String const & symbol_string) const
   {
