@@ -223,13 +223,57 @@ namespace context_free {
   Grammar::follow() const
   {
     std::map<Symbol, Symbol_Set> result;
-    result["S"_sym] = Symbol_Set({"A"_sym, Symbol::right_end_marker()});
+
+    result[start_symbol()] = {Symbol::right_end_marker()};
+
+    bool progress_made = true;
+    while (progress_made) {
+      progress_made = false;
+      for (auto const & production : productions) {
+        auto const & head = production.first;
+        for (auto const & body : production.second) {
+          progress_made = progress_made || add_production_to_follow(head, body, result);
+        }
+      }
+    }
     return result;
   }
 
   Symbol_Set
   Grammar::follow(Symbol const & symbol) const
   {
+    // TODO: Add check to ensure symbol is not a terminal.
     return follow()[symbol];
+  }
+
+  bool
+  Grammar::add_production_to_follow(
+      Symbol const & head,
+      Symbol_String const & body,
+      std::map<Symbol, Symbol_Set> & follow_map) const
+  {
+    bool progress_made = false;
+
+    auto it = body.begin();
+    while (it != body.end()) {
+      auto const & current_symbol = *it;
+      ++it;
+
+      auto first_right_side = first(Symbol_String(it, body.end()));
+      auto & follow_a = follow_map[head];
+      auto & follow_b = follow_map[current_symbol];
+
+      // Adds all of FOLLOW(A) to FOLLOW(B)
+      if (first_right_side.erase(Symbol::empty()) > 0) {
+        auto const size_before_adding_follow_a = follow_b.size();
+        follow_b.insert(follow_a.begin(), follow_a.end());
+        progress_made = progress_made || (follow_b.size() != size_before_adding_follow_a);
+      }
+
+      auto const size_before_adding_first_beta = follow_b.size();
+      follow_b.insert(first_right_side.begin(), first_right_side.end());
+      progress_made = progress_made || (follow_b.size() != size_before_adding_first_beta);
+    }
+    return progress_made;
   }
 }

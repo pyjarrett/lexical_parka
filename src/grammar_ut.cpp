@@ -177,8 +177,19 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_String_Test) {
 TEST(Follow_Tests, Endmarker_Follows_Start_Symbol) {
   Grammar grammar;
   grammar.set_production("S"_sym, {"A"_sym});
-  EXPECT_EQ(grammar.follow("S"_sym), Symbol_Set({"A"_sym, Symbol::right_end_marker()}));
+  EXPECT_EQ(grammar.follow("S"_sym), Symbol_Set({Symbol::right_end_marker()}));
+}
 
+
+TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, Follow_Test) {
+  EXPECT_EQ(grammar.follow("E"_sym), Symbol_Set({")"_sym, Symbol::right_end_marker()}));
+  EXPECT_EQ(grammar.follow("E'"_sym), Symbol_Set({")"_sym, Symbol::right_end_marker()}));
+  EXPECT_EQ(grammar.follow("T"_sym),
+    Symbol_Set({"+"_sym, ")"_sym, Symbol::right_end_marker()}));
+  EXPECT_EQ(grammar.follow("T'"_sym),
+    Symbol_Set({"+"_sym, ")"_sym, Symbol::right_end_marker()}));
+  EXPECT_EQ(grammar.follow("F"_sym),
+    Symbol_Set({"*"_sym, "+"_sym, ")"_sym, Symbol::right_end_marker()}));
 }
 
 int main(int argc, char ** argv) {

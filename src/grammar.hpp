@@ -11,6 +11,10 @@ class Grammar {
   std::map<Symbol, Symbol_String_Alternatives> productions;
 
   void add_terminals_to_first(std::map<Symbol, Symbol_Set> & first_map) const;
+  bool add_production_to_follow(
+      Symbol const & head,
+      Symbol_String const & body,
+      std::map<Symbol, Symbol_Set> & follow_map) const;
 
 public:
   Grammar();
