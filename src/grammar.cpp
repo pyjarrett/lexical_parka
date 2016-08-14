@@ -264,7 +264,7 @@ namespace context_free {
       }
 
       auto const first_right_side = first(Symbol_String(it, body.end()));
-      auto & follow_a = follow_map[head];
+      auto const & follow_a = follow_map[head];
       auto & follow_b = follow_map[current_symbol];
 
       // Adds all of FOLLOW(A) to FOLLOW(B)
