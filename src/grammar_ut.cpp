@@ -41,12 +41,25 @@ TEST(Grammar_Test, Add_Empty_Production) {
   Grammar grammar;
   grammar.set_production("A"_sym, {Symbol::empty()});
   EXPECT_EQ("empty", as_string(grammar["A"_sym]));
+  EXPECT_EQ("A"_sym, grammar.start_symbol());
 }
 
 TEST(Grammar_Test, Add_Multiple_Alternative_Production) {
   Grammar grammar;
   grammar.set_production("A"_sym, {"B"_sym + "C"_sym | "D"_sym | "E"_sym + "F"_sym});
   EXPECT_EQ("B C | D | E F", as_string(grammar["A"_sym]));
+  EXPECT_EQ("A"_sym, grammar.start_symbol());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Start symbol tests
+////////////////////////////////////////////////////////////////////////////////
+TEST(Grammar_Start_Symbol_Test, Add_Multiple_Productions) {
+  Grammar grammar;
+  grammar.set_production("Z"_sym, {"B"_sym + "D"_sym});
+  grammar.set_production("A"_sym, {"C"_sym + "D"_sym});
+  grammar.set_production("B"_sym, {"C"_sym + "D"_sym});
+  EXPECT_EQ("Z"_sym, grammar.start_symbol());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

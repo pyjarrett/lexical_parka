@@ -5,6 +5,11 @@
 namespace context_free {
   using Production = std::pair<Symbol, Symbol_String>;
 
+  Grammar::Grammar()
+  : start_symbol_(Symbol::empty())
+  {
+  }
+
   Symbol_String_Alternatives
   Grammar::operator[](Symbol const & symbol) const
   {
@@ -21,6 +26,10 @@ namespace context_free {
     Symbol_String_Alternatives const & alternatives)
   {
     productions[head] = alternatives;
+
+    if (start_symbol_ == Symbol::empty()) {
+      start_symbol_ = head;
+    }
   }
 
   bool
