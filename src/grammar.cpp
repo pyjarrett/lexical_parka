@@ -21,7 +21,7 @@ namespace context_free {
   }
 
   void
-  Grammar::set_production(
+  Grammar::set_alternatives(
     Symbol const & head,
     Symbol_String_Alternatives const & alternatives)
   {

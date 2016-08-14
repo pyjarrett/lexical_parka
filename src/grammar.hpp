@@ -25,7 +25,7 @@ public:
   Grammar & operator=(Grammar const & other) = delete;
   Grammar & operator=(Grammar && other) = delete;
 
-  void set_production(
+  void set_alternatives(
     Symbol const & head,
     Symbol_String_Alternatives const & alternatives);
   Symbol_String_Alternatives operator[](Symbol const & symbol) const;

@@ -11,9 +11,9 @@ protected:
   Grammar grammar;
 
   virtual void SetUp() {
-    grammar.set_production("E"_sym, {"E"_sym + "+"_sym + "T"_sym | "T"_sym});
-    grammar.set_production("T"_sym, {"T"_sym + "*"_sym + "F"_sym | "F"_sym});
-    grammar.set_production("F"_sym, {"("_sym + "E"_sym + ")"_sym | "id"_sym});
+    grammar.set_alternatives("E"_sym, {"E"_sym + "+"_sym + "T"_sym | "T"_sym});
+    grammar.set_alternatives("T"_sym, {"T"_sym + "*"_sym + "F"_sym | "F"_sym});
+    grammar.set_alternatives("F"_sym, {"("_sym + "E"_sym + ")"_sym | "id"_sym});
   }
 
   virtual void TearDown() {}
@@ -24,11 +24,11 @@ protected:
   Grammar grammar;
 
   virtual void SetUp() {
-    grammar.set_production("E"_sym, {"T"_sym + "E'"_sym});
-    grammar.set_production("E'"_sym, {"+"_sym + "T"_sym + "E'"_sym | Symbol::empty()});
-    grammar.set_production("T"_sym, {"F"_sym + "T'"_sym});
-    grammar.set_production("T'"_sym, {"*"_sym + "F"_sym + "T'"_sym | Symbol::empty()});
-    grammar.set_production("F"_sym, {"("_sym + "E"_sym + ")"_sym | "id"_sym});
+    grammar.set_alternatives("E"_sym, {"T"_sym + "E'"_sym});
+    grammar.set_alternatives("E'"_sym, {"+"_sym + "T"_sym + "E'"_sym | Symbol::empty()});
+    grammar.set_alternatives("T"_sym, {"F"_sym + "T'"_sym});
+    grammar.set_alternatives("T'"_sym, {"*"_sym + "F"_sym + "T'"_sym | Symbol::empty()});
+    grammar.set_alternatives("F"_sym, {"("_sym + "E"_sym + ")"_sym | "id"_sym});
   }
 
   virtual void TearDown() {}
@@ -39,14 +39,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Test, Add_Empty_Production) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {Symbol::empty()});
+  grammar.set_alternatives("A"_sym, {Symbol::empty()});
   EXPECT_EQ("empty", as_string(grammar["A"_sym]));
   EXPECT_EQ("A"_sym, grammar.start_symbol());
 }
 
 TEST(Grammar_Test, Add_Multiple_Alternative_Production) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym + "C"_sym | "D"_sym | "E"_sym + "F"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym + "C"_sym | "D"_sym | "E"_sym + "F"_sym});
   EXPECT_EQ("B C | D | E F", as_string(grammar["A"_sym]));
   EXPECT_EQ("A"_sym, grammar.start_symbol());
 }
@@ -56,9 +56,9 @@ TEST(Grammar_Test, Add_Multiple_Alternative_Production) {
 ////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Start_Symbol_Test, Add_Multiple_Productions) {
   Grammar grammar;
-  grammar.set_production("Z"_sym, {"B"_sym + "D"_sym});
-  grammar.set_production("A"_sym, {"C"_sym + "D"_sym});
-  grammar.set_production("B"_sym, {"C"_sym + "D"_sym});
+  grammar.set_alternatives("Z"_sym, {"B"_sym + "D"_sym});
+  grammar.set_alternatives("A"_sym, {"C"_sym + "D"_sym});
+  grammar.set_alternatives("B"_sym, {"C"_sym + "D"_sym});
   EXPECT_EQ("Z"_sym, grammar.start_symbol());
 }
 
@@ -67,45 +67,45 @@ TEST(Grammar_Start_Symbol_Test, Add_Multiple_Productions) {
 ////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Has_Empty_Production_Test, Single_Empty_Symbol) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {Symbol::empty()});
+  grammar.set_alternatives("A"_sym, {Symbol::empty()});
   ASSERT_TRUE(grammar.has_empty_production("A"_sym));
 }
 
 TEST(Grammar_Has_Empty_Production_Test, Single_Terminal) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym});
   ASSERT_FALSE(grammar.has_empty_production("A"_sym));
 }
 
 TEST(Grammar_Has_Empty_Production_Test, Terminal_Or_Empty) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym | Symbol::empty()});
+  grammar.set_alternatives("A"_sym, {"B"_sym | Symbol::empty()});
   ASSERT_TRUE(grammar.has_empty_production("A"_sym));
 }
 
 TEST(Grammar_Has_Empty_Production_Test, Two_Level) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym});
-  grammar.set_production("B"_sym, {Symbol::empty()});
+  grammar.set_alternatives("A"_sym, {"B"_sym});
+  grammar.set_alternatives("B"_sym, {Symbol::empty()});
   ASSERT_TRUE(grammar.has_empty_production("A"_sym));
   ASSERT_TRUE(grammar.has_empty_production("B"_sym));
 }
 
 TEST(Grammar_Has_Empty_Production_Test, Simple_Circular) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym});
-  grammar.set_production("B"_sym, {"A"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym});
+  grammar.set_alternatives("B"_sym, {"A"_sym});
   EXPECT_FALSE(grammar.has_empty_production("A"_sym));
   EXPECT_FALSE(grammar.has_empty_production("B"_sym));
 }
 
 TEST(Grammar_Has_Empty_Production_Test, Circular_With_Empty) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym | Symbol::empty()});
-  grammar.set_production("B"_sym, {"A"_sym | Symbol::empty()});
-  grammar.set_production("C"_sym, {"D"_sym});
-  grammar.set_production("D"_sym, {"C"_sym});
-  grammar.set_production("E"_sym, {"C"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym | Symbol::empty()});
+  grammar.set_alternatives("B"_sym, {"A"_sym | Symbol::empty()});
+  grammar.set_alternatives("C"_sym, {"D"_sym});
+  grammar.set_alternatives("D"_sym, {"C"_sym});
+  grammar.set_alternatives("E"_sym, {"C"_sym});
   ASSERT_TRUE(grammar.has_empty_production("A"_sym));
   ASSERT_TRUE(grammar.has_empty_production("B"_sym));
   ASSERT_FALSE(grammar.has_empty_production("C"_sym));
@@ -115,11 +115,11 @@ TEST(Grammar_Has_Empty_Production_Test, Circular_With_Empty) {
 
 TEST(Grammar_Has_Empty_Production_Test, Multiple_Symbol_Strings) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym | Symbol::empty()});
-  grammar.set_production("B"_sym, {"B"_sym + "A"_sym | "A"_sym | Symbol::empty()});
-  grammar.set_production("C"_sym, {"D"_sym | "D"_sym + "D"_sym | "D"_sym + "B"_sym});
-  grammar.set_production("D"_sym, {"C"_sym | "C"_sym + "A"_sym});
-  grammar.set_production("E"_sym, {"C"_sym | "C"_sym + "A"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym | Symbol::empty()});
+  grammar.set_alternatives("B"_sym, {"B"_sym + "A"_sym | "A"_sym | Symbol::empty()});
+  grammar.set_alternatives("C"_sym, {"D"_sym | "D"_sym + "D"_sym | "D"_sym + "B"_sym});
+  grammar.set_alternatives("D"_sym, {"C"_sym | "C"_sym + "A"_sym});
+  grammar.set_alternatives("E"_sym, {"C"_sym | "C"_sym + "A"_sym});
   ASSERT_TRUE(grammar.has_empty_production("A"_sym));
   ASSERT_TRUE(grammar.has_empty_production("B"_sym));
   ASSERT_FALSE(grammar.has_empty_production("C"_sym));
@@ -132,9 +132,9 @@ TEST(Grammar_Has_Empty_Production_Test, Multiple_Symbol_Strings) {
 ////////////////////////////////////////////////////////////////////////////////
 TEST(Grammar_Terminal_Test, Terminal_Test) {
   Grammar grammar;
-  grammar.set_production("A"_sym, {"B"_sym});
-  grammar.set_production("B"_sym, {Symbol::empty()});
-  grammar.set_production("C"_sym, {"A"_sym});
+  grammar.set_alternatives("A"_sym, {"B"_sym});
+  grammar.set_alternatives("B"_sym, {Symbol::empty()});
+  grammar.set_alternatives("C"_sym, {"A"_sym});
 
   ASSERT_FALSE(grammar.is_terminal("A"_sym));
   ASSERT_FALSE(grammar.is_terminal("B"_sym));
@@ -176,7 +176,7 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_String_Test) {
 ////////////////////////////////////////////////////////////////////////////////
 TEST(Follow_Tests, Endmarker_Follows_Start_Symbol) {
   Grammar grammar;
-  grammar.set_production("S"_sym, {"A"_sym});
+  grammar.set_alternatives("S"_sym, {"A"_sym});
   EXPECT_EQ(grammar.follow("S"_sym), Symbol_Set({Symbol::right_end_marker()}));
 }
 
