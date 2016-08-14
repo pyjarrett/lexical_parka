@@ -2,41 +2,49 @@
 
 namespace context_free {
 
+template <typename IterableType>
+ostream &
+output_separated_elements(
+  ostream & os,
+  IterableType const & iterable,
+  string const & separator)
+{
+  string current_separator = "";
+  for (auto item : iterable) {
+    os << current_separator << item;
+    current_separator = separator;
+  }
+  return os;
+}
+
+ostream &
+operator<<(
+  ostream & os,
+  Symbol const & symbol)
+{
+  return os << symbol.repr();
+}
+
 ostream &
 operator<<(
   ostream & os,
   Symbol_String const & symbol_string)
 {
-  string separator = "";
-  for (auto sym : symbol_string) {
-    os << separator << sym.repr();
-    separator = " ";
-  }
-  return os;
+  return output_separated_elements(os, symbol_string, " ");
 }
 
 ostream & operator<<(
   ostream & os,
   Symbol_String_Alternatives const & symbol_string_vec)
 {
-  string separator = "";
-  for (auto sym_str : symbol_string_vec) {
-    os << separator << sym_str;
-    separator = " | ";
-  }
-  return os;
+  return output_separated_elements(os, symbol_string_vec, " | ");
 }
 
 ostream & operator<<(
   ostream & os,
   Symbol_Set const & symbol_set)
 {
-  string separator = "";
-  for (auto const & symbol : symbol_set) {
-    std::cout << separator << symbol;
-    separator = " ";
-  }
-  return os;
+  return output_separated_elements(os, symbol_set, " ");
 }
 
 } // namespace context_free
