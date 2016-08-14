@@ -218,4 +218,18 @@ namespace context_free {
     }
     return result;
   }
+
+  std::map<Symbol, Symbol_Set>
+  Grammar::follow() const
+  {
+    std::map<Symbol, Symbol_Set> result;
+    result["S"_sym] = Symbol_Set({"A"_sym, Symbol::right_end_marker()});
+    return result;
+  }
+
+  Symbol_Set
+  Grammar::follow(Symbol const & symbol) const
+  {
+    return follow()[symbol];
+  }
 }

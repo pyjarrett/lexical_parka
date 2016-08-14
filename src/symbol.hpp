@@ -32,6 +32,11 @@ public:
    */
   static Symbol empty();
 
+  /**
+   * Typically denoted "$"
+   */
+  static Symbol right_end_marker();
+
   string repr() const { return repr_; }
 
   // "Less than" for use in std::set and std::map

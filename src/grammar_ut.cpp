@@ -170,6 +170,17 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, First_String_Test) {
       Symbol_Set({"+"_sym, "*"_sym, "("_sym, "id"_sym}));
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// FOLLOW(A) Tests
+////////////////////////////////////////////////////////////////////////////////
+TEST(Follow_Tests, Endmarker_Follows_Start_Symbol) {
+  Grammar grammar;
+  grammar.set_production("S"_sym, {"A"_sym});
+  EXPECT_EQ(grammar.follow("S"_sym), Symbol_Set({"A"_sym, Symbol::right_end_marker()}));
+
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

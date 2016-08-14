@@ -37,6 +37,9 @@ public:
   std::map<Symbol, Symbol_Set> first() const;
   Symbol_Set first(Symbol const & symbol) const;
   Symbol_Set first(Symbol_String const & symbol_string) const;
+
+  std::map<Symbol, Symbol_Set> follow() const;
+  Symbol_Set follow(Symbol const & symbol) const;
 };
 
 

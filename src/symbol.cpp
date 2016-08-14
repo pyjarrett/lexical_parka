@@ -10,6 +10,12 @@ Symbol::empty() {
 }
 
 
+Symbol
+Symbol::right_end_marker() {
+  return Symbol("$");
+}
+
+
 Symbol::operator Symbol_String() const {
   return (Symbol_String) {*this};
 }
