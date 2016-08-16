@@ -68,7 +68,8 @@ public:
 Symbol operator"" _sym(char const * symbol, unsigned long);
 Symbol_String operator+(Symbol_String const & lhs, Symbol_String const & rhs);
 Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String const & rhs);
-vector<Symbol_String> operator|(vector<Symbol_String> const & lhs, Symbol_String const & rhs);
+Symbol_String_Alternatives operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs)
+  ;
 
 
 } // namespace context_free

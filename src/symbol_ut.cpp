@@ -4,8 +4,6 @@
 #include "streams.hpp"
 using namespace context_free;
 
-vector<int> my_vec;
-
 TEST(First_Test, Examples) {
   Symbol e = "E"_sym;
   Symbol e_ = "E'"_sym;
