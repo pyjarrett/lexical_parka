@@ -6,6 +6,9 @@
 
 namespace context_free {
 
+using Production = std::pair<Symbol, Symbol_String>;
+using Predictive_Parsing_Table = std::map<std::pair<Symbol, Symbol>, Production>;
+
 class Grammar {
   Symbol start_symbol_;
   std::map<Symbol, Symbol_String_Alternatives> productions;
@@ -44,8 +47,9 @@ public:
 
   std::map<Symbol, Symbol_Set> follow() const;
   Symbol_Set follow(Symbol const & symbol) const;
-};
 
+  bool create_predictive_parsing_table(Predictive_Parsing_Table * parsing_table) const;
+};
 
 
 } // namespace context_free

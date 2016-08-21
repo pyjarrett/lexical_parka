@@ -14,6 +14,7 @@ class Symbol;
 using Symbol_String = vector<Symbol>;
 using Symbol_Set = std::set<Symbol>;
 using Symbol_String_Alternatives = vector<Symbol_String>;
+using Symbol_Pair = std::pair<Symbol, Symbol>;
 
 /**
  * A lightweight, immutable symbol type.
@@ -21,12 +22,12 @@ using Symbol_String_Alternatives = vector<Symbol_String>;
 class Symbol {
   string repr_;
 
-  explicit Symbol(string repr)
+public:
+  explicit Symbol(string repr="empty")
     : repr_(repr)
   {
   }
 
-public:
   /**
    * The "empty" (epsilon) symbol.
    */
@@ -48,6 +49,10 @@ public:
     return repr_ == other.repr_;
   }
 
+  bool operator!=(Symbol const & other) const {
+    return !((*this) == other);
+  }
+
   /**
    * Quick way to allow conversion into `Symbol_String` for Symbol's to
    * simplify the creation of `operator+` and `operator|` methods.
@@ -56,9 +61,6 @@ public:
    * Symbol types for | and + operators.
    */
   operator Symbol_String() const;
-
-  // Allows use of Symbol() constructor, while hiding it from other clients.
-  friend Symbol operator"" _sym(char const * symbol, unsigned long);
 };
 
 
@@ -66,7 +68,8 @@ public:
 Symbol operator"" _sym(char const * symbol, unsigned long);
 Symbol_String operator+(Symbol_String const & lhs, Symbol_String const & rhs);
 Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String const & rhs);
-vector<Symbol_String> operator|(vector<Symbol_String> const & lhs, Symbol_String const & rhs);
+Symbol_String_Alternatives operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs)
+  ;
 
 
 } // namespace context_free
