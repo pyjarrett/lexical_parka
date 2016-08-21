@@ -327,9 +327,9 @@ namespace context_free {
         auto const current_production = Production(head, alternative);
 
         // Add A -> alpha for each terminal in a.
-        // Slight alteration from Dragon book here, using first(alternative)
-        // instead of first(head), though this could just be a unclear
-        // interpretation of the text.
+        // This was an errata in the Dragon Book
+        // using first(alternative) instead of first(head), though this could
+        // just be a unclear interpretation of the text.
         auto const first_alt = first(alternative);
         for (auto const a : first_alt) {
           if (a != Symbol::empty()) {
