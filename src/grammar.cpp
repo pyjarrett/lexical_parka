@@ -12,8 +12,8 @@ namespace context_free {
   Symbol_String_Alternatives
   Grammar::operator[](Symbol const & symbol) const
   {
-    auto it = productions.find(symbol);
-    if (it != productions.end()) {
+    auto it = productions_.find(symbol);
+    if (it != productions_.end()) {
       return (it->second);
     }
     return Symbol_String_Alternatives();
@@ -24,7 +24,7 @@ namespace context_free {
     Symbol const & head,
     Symbol_String_Alternatives const & alternatives)
   {
-    productions[head] = alternatives;
+    productions_[head] = alternatives;
 
     if (start_symbol_ == Symbol::empty()) {
       start_symbol_ = head;
@@ -70,7 +70,7 @@ namespace context_free {
     vector<Production> current_possibles;
 
     // Initially populate the possible list with the grammar's productions.
-    for (auto const & production : productions) {
+    for (auto const & production : productions_) {
       for (auto const & body : production.second) {
         current_possibles.push_back({production.first, body});
       }
@@ -114,7 +114,7 @@ namespace context_free {
 
   bool
   Grammar::is_terminal(Symbol const & symbol) const {
-    return productions.find(symbol) == productions.end();
+    return productions_.find(symbol) == productions_.end();
   }
 
   void
@@ -122,7 +122,7 @@ namespace context_free {
   {
     // Add all terminal symbols once and head of time since there aren't
     // production rules for them.
-    for (auto const & production : productions) {
+    for (auto const & production : productions_) {
       for (auto const & alternative : production.second) {
         for (auto const & body_symbol : alternative) {
             if (is_terminal(body_symbol)) {
@@ -149,7 +149,7 @@ namespace context_free {
     while (progress_made) {
       progress_made = false;
 
-      for (auto const & production : productions) {
+      for (auto const & production : productions_) {
         auto const & head = production.first;
 
         // X can produce empty, so add it to FIRST
@@ -228,7 +228,7 @@ namespace context_free {
     bool progress_made = true;
     while (progress_made) {
       progress_made = false;
-      for (auto const & production : productions) {
+      for (auto const & production : productions_) {
         auto const & head = production.first;
         for (auto const & body : production.second) {
           progress_made = progress_made || add_production_to_follow(head, body, result);
@@ -308,7 +308,7 @@ namespace context_free {
       return false;
     }
 
-    for (auto const & production : productions) {
+    for (auto const & production : productions_) {
       auto const head = production.first;
 
       for (auto const & alternative : production.second) {

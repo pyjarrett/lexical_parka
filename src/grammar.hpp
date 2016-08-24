@@ -11,7 +11,7 @@ using Predictive_Parsing_Table = std::map<std::pair<Symbol, Symbol>, Production>
 
 class Grammar {
   Symbol start_symbol_;
-  std::map<Symbol, Symbol_String_Alternatives> productions;
+  std::map<Symbol, Symbol_String_Alternatives> productions_;
 
   void add_terminals_to_first(std::map<Symbol, Symbol_Set> & first_map) const;
   bool add_production_to_follow(
