@@ -55,6 +55,35 @@ TEST(Ambiguous_LL1_Grammar, Predictive_Parser_Table_Test) {
 }
 
 
+TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, Production_Printer_Test) {
+  Predictive_Parsing_Table parsing_table;
+  ASSERT_TRUE(create_predictive_parsing_table(grammar, &parsing_table));
+
+  std::vector<Symbol> tokens = { "id"_sym + "+"_sym + "id"_sym + "*"_sym + "id"_sym + Symbol::right_end_marker()};
+
+  std::string expected = "E -> T E'\n"
+    "T -> F T'\n"
+    "F -> id\n"
+    "Matched: id\n"
+    "T' -> empty\n"
+    "E' -> + T E'\n"
+    "Matched: +\n"
+    "T -> F T'\n"
+    "F -> id\n"
+    "Matched: id\n"
+    "T' -> * F T'\n"
+    "Matched: *\n"
+    "F -> id\n"
+    "Matched: id\n"
+    "T' -> empty\n"
+    "E' -> empty\n";
+  std::stringstream parse_output;
+  Predictive_Parse_Print_Visitor printVisitor(parse_output);
+  predictive_parse(parsing_table, grammar, tokens, printVisitor);
+  ASSERT_EQ(expected, parse_output.str());
+}
+
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
