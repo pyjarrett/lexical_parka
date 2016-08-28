@@ -49,3 +49,16 @@ cc_test(
   visibility = ["//src:__pkg__"],
   args = ["--gtest_color=yes"]
 )
+
+
+cc_test(
+  name = "lexer_test",
+  deps = ["@gtest//:lib"],
+  srcs = ["lexer_ut.cpp",
+          "lexer.hpp",
+          "lexer.cpp"],
+  copts = ["-Iexternal/gtest/include"],
+  size = "small",
+  visibility = ["//src:__pkg__"],
+  args = ["--gtest_color=yes"]
+)
