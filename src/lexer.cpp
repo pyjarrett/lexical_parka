@@ -4,7 +4,7 @@
 #include <sstream>
 
 
-namespace context_free {
+namespace parka {
 
 Lexer::Lexer()
   : ignore_characters_(" \t\r\n")
@@ -98,4 +98,4 @@ Lexer::next_token()
   return tk;
 }
 
-} // namespace context_free
+} // namespace parka

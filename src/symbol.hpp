@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace context_free {
+namespace parka {
 
 using std::string;
 using std::vector;
@@ -72,4 +72,4 @@ Symbol_String_Alternatives operator|(Symbol_String_Alternatives const & lhs, Sym
   ;
 
 
-} // namespace context_free
+} // namespace parka

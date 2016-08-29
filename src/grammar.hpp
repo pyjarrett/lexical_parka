@@ -4,7 +4,7 @@
 
 #include <map>
 
-namespace context_free {
+namespace parka {
 
 using Production = std::pair<Symbol, Symbol_String>;
 
@@ -50,4 +50,4 @@ public:
   const std::map<Symbol, Symbol_String_Alternatives> & productions() const { return productions_; }
 };
 
-} // namespace context_free
+} // namespace parka

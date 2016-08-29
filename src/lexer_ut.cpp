@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "lexer.hpp"
-using namespace context_free;
+using namespace parka;
 
 #include <iostream>
 

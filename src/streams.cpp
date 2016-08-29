@@ -1,6 +1,6 @@
 #include "streams.hpp"
 
-namespace context_free {
+namespace parka {
 
 template <typename IterableType>
 ostream &
@@ -47,4 +47,4 @@ ostream & operator<<(
   return output_separated_elements(os, symbol_set, " ");
 }
 
-} // namespace context_free
+} // namespace parka

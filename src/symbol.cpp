@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace context_free {
+namespace parka {
 
 Symbol
 Symbol::empty() {
@@ -51,4 +51,4 @@ operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs) {
   return result;
 }
 
-} // namespace context_free
+} // namespace parka

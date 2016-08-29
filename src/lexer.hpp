@@ -5,7 +5,7 @@
 #include <regex>
 #include <string>
 
-namespace context_free {
+namespace parka {
 
 /**
  * The atomic unit created by the lexer.
@@ -56,4 +56,4 @@ public:
   }
 };
 
-} // namespace context_free
+} // namespace parka
