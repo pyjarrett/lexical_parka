@@ -27,6 +27,16 @@ Lexer::register_pattern_for_token(
 }
 
 
+/**
+ * Shorthand for creating a word pattern with a similarly named symbol.
+ */
+void
+Lexer::register_keyword(std::string const & keyword)
+{
+  token_patterns_.push_back(std::make_pair(std::regex("\\b" + keyword + "\\b"), keyword));
+}
+
+
 void
 Lexer::lex(std::string const & str)
 {

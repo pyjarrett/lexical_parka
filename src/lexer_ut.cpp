@@ -36,6 +36,40 @@ TEST(Lexer_Test, Multiple_Integers) {
 }
 
 
+TEST(Lexer_Test, Keyword_Identifier_Recognition) {
+  Lexer lexer;
+  lexer.register_keyword("for");
+  lexer.register_keyword("in");
+  lexer.register_pattern_for_token("[a-zA-Z_][a-zA-Z_0-9]*", "identifier");
+
+  lexer.lex("for x in list");
+
+  Token tk;
+
+  ASSERT_TRUE(lexer.has_next_token());
+  tk = lexer.next_token();
+  EXPECT_EQ("for", tk.symbol_name);
+  EXPECT_EQ("for", tk.lexeme);
+
+  ASSERT_TRUE(lexer.has_next_token());
+  tk = lexer.next_token();
+  EXPECT_EQ("identifier", tk.symbol_name);
+  EXPECT_EQ("x", tk.lexeme);
+
+  ASSERT_TRUE(lexer.has_next_token());
+  tk = lexer.next_token();
+  EXPECT_EQ("in", tk.symbol_name);
+  EXPECT_EQ("in", tk.lexeme);
+
+  ASSERT_TRUE(lexer.has_next_token());
+  tk = lexer.next_token();
+  EXPECT_EQ("identifier", tk.symbol_name);
+  EXPECT_EQ("list", tk.lexeme);
+
+  ASSERT_FALSE(lexer.has_next_token());
+}
+
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

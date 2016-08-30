@@ -44,6 +44,7 @@ public:
   Lexer();
 
   void register_pattern_for_token(std::string const & pattern, std::string const & token_name);
+  void register_keyword(std::string const & keyword);
 
   void lex(std::string const & str);
   void lex(std::istream & input);
