@@ -70,6 +70,30 @@ TEST(Lexer_Test, Keyword_Identifier_Recognition) {
 }
 
 
+TEST(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
+  Lexer lexer;
+  lexer.register_keyword("for");
+  lexer.register_keyword("in");
+  lexer.register_pattern_for_token("[a-zA-Z_][a-zA-Z_0-9]*", "identifier");
+
+  lexer.lex(R"(
+  foreach mine in inner
+  )");
+
+  std::vector<std::pair<std::string, std::string>> expected = {
+    {"identifier", "foreach"}, {"identifier", "mine"}, {"in", "in"}, {"identifier", "inner"}};
+
+  Token tk;
+  for (auto name_lexeme : expected) {
+    ASSERT_TRUE(lexer.has_next_token());
+    tk = lexer.next_token();
+    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
+    EXPECT_EQ(name_lexeme.second, tk.lexeme);
+  }
+  ASSERT_FALSE(lexer.has_next_token());
+}
+
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
