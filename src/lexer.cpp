@@ -58,7 +58,6 @@ Lexer::lex(std::istream & input)
     buffer.append(next_line);
     buffer.append("\n");
   }
-  std::cout << "Buffer is \"" << buffer << "\"\n";
 
   // Find the first matching pattern at the current input.
   auto current = buffer.cbegin();
@@ -66,26 +65,19 @@ Lexer::lex(std::istream & input)
   
   // Continue until end of buffer reached.
   while (current != eof) {
-    while (is_ignored(*current))
-    {
+    while (is_ignored(*current)) {
       ++current;
     }
 
     for (auto regex_token_pair : token_patterns_) {
       std::smatch match;
 
-      // Possible match
-      if (std::regex_search(current, eof, match, regex_token_pair.first)) {
-        // Verify starting at current position and next is EOF or ignored character. 
-        if (match[0].first == current)
-        {
+      // Verify starting at current position and next is EOF or ignored character. 
+      if (std::regex_search(current, eof, match, regex_token_pair.first)
+          && match[0].first == current)
+      {
           tokens_.push_back({regex_token_pair.second, match.str()});
           current = match[0].second;
-          std::cout << "Found match: " << match.str() << '\n';
-        }
-        else {
-          std::cerr << "Possible match ignored:" << '"' << match.str() << '"' << '\n';
-        }
       }
     }
   }
