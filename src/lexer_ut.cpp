@@ -115,6 +115,35 @@ TEST(Lexer_Test, Single_Function_Call) {
 }
 
 
+TEST(Lexer_Test, Quoted_String) {
+  Lexer lexer;
+  lexer.register_pattern_for_token("\"([^\"\\\\]|(\\\\.))*\"", "quoted_string");
+  lexer.lex(R"(
+  "word"
+  "multiple words"
+  "words with something \"in quotes\""
+  "words
+  including a newline."
+  "a really pathological case \\"
+  )");
+  std::vector<std::pair<std::string, std::string>> expected = {
+    {"quoted_string", "\"word\""},
+    {"quoted_string", "\"multiple words\""},
+    {"quoted_string", "\"words with something \\\"in quotes\\\"\""},
+    {"quoted_string", "\"words\n  including a newline.\""},
+    {"quoted_string", "\"a really pathological case \\\\\""}};
+
+  Token tk;
+  for (auto name_lexeme : expected) {
+    ASSERT_TRUE(lexer.has_next_token());
+    tk = lexer.next_token();
+    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
+    EXPECT_EQ(name_lexeme.second, tk.lexeme);
+  }
+  ASSERT_FALSE(lexer.has_next_token());
+}
+
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
