@@ -62,23 +62,37 @@ Lexer::lex(std::istream & input)
   // Find the first matching pattern at the current input.
   auto current = buffer.cbegin();
   auto eof = buffer.cend();
-  
+
   // Continue until end of buffer reached.
   while (current != eof) {
-    while (is_ignored(*current)) {
+    // Finds next whitespace or end of input.
+    while (is_ignored(*current) && current != eof) {
       ++current;
     }
 
+    if (current == eof) {
+      return;
+    }
+
+    auto found_match = false;
     for (auto regex_token_pair : token_patterns_) {
       std::smatch match;
 
-      // Verify starting at current position and next is EOF or ignored character. 
+      // Verify starting at current position.
       if (std::regex_search(current, eof, match, regex_token_pair.first)
           && match[0].first == current)
       {
-          tokens_.push_back({regex_token_pair.second, match.str()});
-          current = match[0].second;
+        tokens_.push_back({regex_token_pair.second, match.str()});
+        current = match[0].second;
+        found_match = true;
+        break;
       }
+    }
+
+    // No match found, report an error and move to the next character
+    // TODO: Report an error.
+    if (!found_match) {
+      ++current;
     }
   }
 }

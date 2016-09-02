@@ -8,7 +8,7 @@ using namespace parka;
 
 TEST(Lexer_Test, Single_Integer) {
   Lexer lexer;
-  lexer.register_pattern_for_token("(-)?[0-9]+", "integer");
+  lexer.register_pattern_for_token("(-)?([1-9][0-9]*|0)", "integer");
   lexer.lex("123");
   ASSERT_TRUE(lexer.has_next_token());
   EXPECT_EQ("123", lexer.next_token().lexeme);
@@ -17,7 +17,7 @@ TEST(Lexer_Test, Single_Integer) {
 
 TEST(Lexer_Test, Multiple_Integers) {
   Lexer lexer;
-  lexer.register_pattern_for_token("(-)?[0-9]+", "integer");
+  lexer.register_pattern_for_token("(-)?([1-9][0-9]*|0)", "integer");
   lexer.lex("123 456 789\n234 -345");
   ASSERT_TRUE(lexer.has_next_token());
   EXPECT_EQ("123", lexer.next_token().lexeme);
@@ -82,6 +82,27 @@ TEST(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
 
   std::vector<std::pair<std::string, std::string>> expected = {
     {"identifier", "foreach"}, {"identifier", "mine"}, {"in", "in"}, {"identifier", "inner"}};
+
+  Token tk;
+  for (auto name_lexeme : expected) {
+    ASSERT_TRUE(lexer.has_next_token());
+    tk = lexer.next_token();
+    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
+    EXPECT_EQ(name_lexeme.second, tk.lexeme);
+  }
+  ASSERT_FALSE(lexer.has_next_token());
+}
+
+
+TEST(Lexer_Test, Single_Function_Call) {
+  Lexer lexer;
+  lexer.register_pattern_for_token("[a-zA-Z_][a-zA-Z_0-9]*", "identifier");
+  lexer.register_pattern_for_token("[(]", "(");
+  lexer.register_pattern_for_token("[)]", ")");
+
+  lexer.lex("cos(x)");
+  std::vector<std::pair<std::string, std::string>> expected = {
+    {"identifier", "cos"}, {"(", "("}, {"identifier", "x"}, {")", ")"}};
 
   Token tk;
   for (auto name_lexeme : expected) {
