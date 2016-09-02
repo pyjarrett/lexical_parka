@@ -6,7 +6,26 @@ using namespace parka;
 #include <iostream>
 
 
-TEST(Lexer_Test, Single_Integer) {
+class Lexer_Test : public ::testing::Test {
+protected:
+  void
+  ASSERT_FIND_EXPECTED_TOKENS(
+    std::vector<std::pair<std::string, std::string>> & expected,
+    Lexer & lexer)
+  {
+    Token tk;
+    for (auto name_lexeme : expected) {
+      ASSERT_TRUE(lexer.has_next_token());
+      tk = lexer.next_token();
+      EXPECT_EQ(name_lexeme.first, tk.symbol_name);
+      EXPECT_EQ(name_lexeme.second, tk.lexeme);
+    }
+    ASSERT_FALSE(lexer.has_next_token());
+  }
+};
+
+
+TEST_F(Lexer_Test, Single_Integer) {
   Lexer lexer;
   lexer.register_pattern_for_token("(-)?([1-9][0-9]*|0)", "integer");
   lexer.lex("123");
@@ -15,28 +34,22 @@ TEST(Lexer_Test, Single_Integer) {
 }
 
 
-TEST(Lexer_Test, Multiple_Integers) {
+TEST_F(Lexer_Test, Multiple_Integers) {
   Lexer lexer;
   lexer.register_pattern_for_token("(-)?([1-9][0-9]*|0)", "integer");
   lexer.lex("123 456 789\n234 -345");
-  ASSERT_TRUE(lexer.has_next_token());
-  EXPECT_EQ("123", lexer.next_token().lexeme);
 
-  ASSERT_TRUE(lexer.has_next_token());
-  EXPECT_EQ("456", lexer.next_token().lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  EXPECT_EQ("789", lexer.next_token().lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  EXPECT_EQ("234", lexer.next_token().lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  EXPECT_EQ("-345", lexer.next_token().lexeme);
+  std::vector<std::pair<std::string, std::string>> expected = {
+    {"integer", "123"},
+    {"integer", "456"},
+    {"integer", "789"},
+    {"integer", "234"},
+    {"integer", "-345"}};
+  ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
 
 
-TEST(Lexer_Test, Keyword_Identifier_Recognition) {
+TEST_F(Lexer_Test, Keyword_Identifier_Recognition) {
   Lexer lexer;
   lexer.register_keyword("for");
   lexer.register_keyword("in");
@@ -44,33 +57,16 @@ TEST(Lexer_Test, Keyword_Identifier_Recognition) {
 
   lexer.lex("for x in list");
 
-  Token tk;
-
-  ASSERT_TRUE(lexer.has_next_token());
-  tk = lexer.next_token();
-  EXPECT_EQ("for", tk.symbol_name);
-  EXPECT_EQ("for", tk.lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  tk = lexer.next_token();
-  EXPECT_EQ("identifier", tk.symbol_name);
-  EXPECT_EQ("x", tk.lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  tk = lexer.next_token();
-  EXPECT_EQ("in", tk.symbol_name);
-  EXPECT_EQ("in", tk.lexeme);
-
-  ASSERT_TRUE(lexer.has_next_token());
-  tk = lexer.next_token();
-  EXPECT_EQ("identifier", tk.symbol_name);
-  EXPECT_EQ("list", tk.lexeme);
-
-  ASSERT_FALSE(lexer.has_next_token());
+  std::vector<std::pair<std::string, std::string>> expected = {
+    {"for", "for"},
+    {"identifier", "x"},
+    {"in", "in"},
+    {"identifier", "list"}};
+  ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
 
 
-TEST(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
+TEST_F(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
   Lexer lexer;
   lexer.register_keyword("for");
   lexer.register_keyword("in");
@@ -82,19 +78,11 @@ TEST(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
 
   std::vector<std::pair<std::string, std::string>> expected = {
     {"identifier", "foreach"}, {"identifier", "mine"}, {"in", "in"}, {"identifier", "inner"}};
-
-  Token tk;
-  for (auto name_lexeme : expected) {
-    ASSERT_TRUE(lexer.has_next_token());
-    tk = lexer.next_token();
-    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
-    EXPECT_EQ(name_lexeme.second, tk.lexeme);
-  }
-  ASSERT_FALSE(lexer.has_next_token());
+  ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
 
 
-TEST(Lexer_Test, Single_Function_Call) {
+TEST_F(Lexer_Test, Single_Function_Call) {
   Lexer lexer;
   lexer.register_pattern_for_token("[a-zA-Z_][a-zA-Z_0-9]*", "identifier");
   lexer.register_pattern_for_token("[(]", "(");
@@ -103,19 +91,11 @@ TEST(Lexer_Test, Single_Function_Call) {
   lexer.lex("cos(x)");
   std::vector<std::pair<std::string, std::string>> expected = {
     {"identifier", "cos"}, {"(", "("}, {"identifier", "x"}, {")", ")"}};
-
-  Token tk;
-  for (auto name_lexeme : expected) {
-    ASSERT_TRUE(lexer.has_next_token());
-    tk = lexer.next_token();
-    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
-    EXPECT_EQ(name_lexeme.second, tk.lexeme);
-  }
-  ASSERT_FALSE(lexer.has_next_token());
+  ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
 
 
-TEST(Lexer_Test, Quoted_String) {
+TEST_F(Lexer_Test, Quoted_String) {
   Lexer lexer;
   lexer.register_pattern_for_token("\"([^\"\\\\]|(\\\\.))*\"", "quoted_string");
   lexer.lex(R"(
@@ -132,15 +112,7 @@ TEST(Lexer_Test, Quoted_String) {
     {"quoted_string", "\"words with something \\\"in quotes\\\"\""},
     {"quoted_string", "\"words\n  including a newline.\""},
     {"quoted_string", "\"a really pathological case \\\\\""}};
-
-  Token tk;
-  for (auto name_lexeme : expected) {
-    ASSERT_TRUE(lexer.has_next_token());
-    tk = lexer.next_token();
-    EXPECT_EQ(name_lexeme.first, tk.symbol_name);
-    EXPECT_EQ(name_lexeme.second, tk.lexeme);
-  }
-  ASSERT_FALSE(lexer.has_next_token());
+  ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
 
 
