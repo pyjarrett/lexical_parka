@@ -5,7 +5,7 @@
 
 #include <stack>
 
-namespace context_free {
+namespace parka {
 
 using Predictive_Parsing_Table = std::map<std::pair<Symbol, Symbol>, Production>;
 using Token = Symbol;
@@ -95,4 +95,4 @@ predictive_parse(
   }
 #undef error
 }
-} // namespace context_free
+} // namespace parka

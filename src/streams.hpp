@@ -16,7 +16,7 @@ std::string as_string(T const & value) {
 }
 
 
-namespace context_free {
+namespace parka {
     
 using std::ostream;
 
@@ -24,4 +24,4 @@ ostream & operator<<(ostream & os, Symbol_String const & symbol_string);
 ostream & operator<<(ostream & os, vector<Symbol_String> const & symbol_string_vec);
 ostream & operator<<(ostream & os, Symbol_Set const & symbol_set);
 
-} // namespace context_free
+} // namespace parka

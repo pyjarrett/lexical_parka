@@ -3,7 +3,7 @@
 #include "streams.hpp"
 #include <utility>
 
-namespace context_free {
+namespace parka {
   Grammar::Grammar()
   : start_symbol_(Symbol::empty())
   {

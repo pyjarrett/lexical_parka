@@ -4,7 +4,7 @@
 #include "ll.hpp"
 #include "streams.hpp"
 #include "symbol.hpp"
-using namespace context_free;
+using namespace parka;
 
 #include "sample_grammar_test_fixtures.hpp"
 

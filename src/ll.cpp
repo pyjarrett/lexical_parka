@@ -2,7 +2,7 @@
 
 #include "streams.hpp"
 
-namespace context_free {
+namespace parka {
   /**
    * Creates a predictive parsing table (for a recursive-decent parser with no
    * backtracking) if possible for a LL(1) grammar.
@@ -81,4 +81,4 @@ namespace context_free {
     }
     return true;
   }
-} // namespace context_free
+} // namespace parka

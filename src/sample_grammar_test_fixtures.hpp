@@ -12,7 +12,7 @@
  */
 class Add_Multiply_Grammar_Test : public ::testing::Test {
 protected:
-  context_free::Grammar grammar;
+  parka::Grammar grammar;
 
   virtual void SetUp() {
     grammar.set_alternatives("E"_sym, {"E"_sym + "+"_sym + "T"_sym | "T"_sym});
@@ -29,7 +29,7 @@ protected:
  */
 class Non_Left_Recursive_Add_Multiply_Grammar_Test : public ::testing::Test {
 protected:
-  context_free::Grammar grammar;
+  parka::Grammar grammar;
 
   virtual void SetUp() {
     grammar.set_alternatives("E"_sym, {"T"_sym + "E'"_sym});
