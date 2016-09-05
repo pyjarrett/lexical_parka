@@ -6,7 +6,7 @@ cc_test(
          "streams.hpp",
          "streams.cpp",
          "symbol_ut.cpp"],
-  copts = ["-Iexternal/gtest/include"],
+  copts = ["-Iexternal/gtest/include", "-std=c++14"],
   size = "small",
   visibility = ["//src:__pkg__"],
   args = ["--gtest_color=yes"]
@@ -24,7 +24,7 @@ cc_test(
           "grammar.hpp",
           "grammar.cpp",
           "grammar_ut.cpp"],
-  copts = ["-Iexternal/gtest/include"],
+  copts = ["-Iexternal/gtest/include", "-std=c++14"],
   size = "small",
   visibility = ["//src:__pkg__"],
   args = ["--gtest_color=yes"]
@@ -44,7 +44,7 @@ cc_test(
           "ll_ut.cpp",
           "ll.hpp",
           "ll.cpp"],
-  copts = ["-Iexternal/gtest/include"],
+  copts = ["-Iexternal/gtest/include", "-std=c++14"],
   size = "small",
   visibility = ["//src:__pkg__"],
   args = ["--gtest_color=yes"]
@@ -57,7 +57,7 @@ cc_test(
   srcs = ["lexer_ut.cpp",
           "lexer.hpp",
           "lexer.cpp"],
-  copts = ["-Iexternal/gtest/include"],
+  copts = ["-Iexternal/gtest/include", "-std=c++14"],
   size = "small",
   visibility = ["//src:__pkg__"],
   args = ["--gtest_color=yes"]
