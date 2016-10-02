@@ -1,64 +1,26 @@
-cc_test(
-  name = "symbol_test",
-  deps = ["@gtest//:lib"],
-  srcs = ["symbol.cpp",
-         "symbol.hpp",
-         "streams.hpp",
-         "streams.cpp",
-         "symbol_ut.cpp"],
-  copts = ["-Iexternal/gtest/include", "-std=c++14"],
-  size = "small",
-  visibility = ["//src:__pkg__"],
-  args = ["--gtest_color=yes"]
+load("//tools:gtest.bzl", "gtest_unit")
+
+gtest_unit(
+    name = "symbol",
+    components = ["streams"],
 )
 
-
-cc_test(
-  name = "grammar_test",
-  deps = ["@gtest//:lib"],
-  srcs = ["symbol.hpp",
-          "symbol.cpp",
-          "streams.hpp",
-          "streams.cpp",
-          "sample_grammar_test_fixtures.hpp",
-          "grammar.hpp",
-          "grammar.cpp",
-          "grammar_ut.cpp"],
-  copts = ["-Iexternal/gtest/include", "-std=c++14"],
-  size = "small",
-  visibility = ["//src:__pkg__"],
-  args = ["--gtest_color=yes"]
+gtest_unit(
+  name = "grammar",
+  components = ["symbol",
+                "streams"],
+  srcs = ["sample_grammar_test_fixtures.hpp"],
 )
 
-
-cc_test(
-  name = "ll1_test",
-  deps = ["@gtest//:lib"],
-  srcs = ["symbol.hpp",
-          "symbol.cpp",
-          "streams.hpp",
-          "streams.cpp",
-          "grammar.hpp",
-          "grammar.cpp",
-          "sample_grammar_test_fixtures.hpp",
-          "ll_ut.cpp",
-          "ll.hpp",
-          "ll.cpp"],
-  copts = ["-Iexternal/gtest/include", "-std=c++14"],
-  size = "small",
-  visibility = ["//src:__pkg__"],
-  args = ["--gtest_color=yes"]
+gtest_unit(
+  name = "ll",
+  components = ["symbol",
+                "streams",
+                "grammar",
+                "lexer"],
+  srcs = ["sample_grammar_test_fixtures.hpp"],
 )
 
-
-cc_test(
-  name = "lexer_test",
-  deps = ["@gtest//:lib"],
-  srcs = ["lexer_ut.cpp",
-          "lexer.hpp",
-          "lexer.cpp"],
-  copts = ["-Iexternal/gtest/include", "-std=c++14"],
-  size = "small",
-  visibility = ["//src:__pkg__"],
-  args = ["--gtest_color=yes"]
+gtest_unit(
+  name = "lexer",
 )
