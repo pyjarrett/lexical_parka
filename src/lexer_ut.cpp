@@ -17,7 +17,7 @@ protected:
     for (auto name_lexeme : expected) {
       ASSERT_TRUE(lexer.has_next_token());
       tk = lexer.next_token();
-      EXPECT_EQ(name_lexeme.first, tk.symbol_name);
+      EXPECT_EQ(name_lexeme.first, tk.symbol.repr());
       EXPECT_EQ(name_lexeme.second, tk.lexeme);
     }
     ASSERT_FALSE(lexer.has_next_token());

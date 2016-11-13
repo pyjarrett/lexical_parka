@@ -1,5 +1,7 @@
 #pragma once
 
+#include "symbol.hpp"
+
 #include <iosfwd>
 #include <list>
 #include <regex>
@@ -11,10 +13,23 @@ namespace parka {
  * The atomic unit created by the lexer.
  */
 struct Token {
-  std::string symbol_name;
+  Symbol symbol;
 
   /// The contents of the matched pattern.
   std::string lexeme;
+
+  explicit Token(Symbol const & symbol) : symbol(symbol), lexeme(symbol.repr()) {}
+  Token(Symbol const & symbol, std::string const & lexeme) : symbol(symbol), lexeme(lexeme) {}
+
+  // Per "Modern C++" item 17.
+  // Having "null" tokens isn't the worst thing here,
+  // and it's perfectly OK to use default copy and move.
+  Token() = default;
+  ~Token() = default;
+  Token(Token const &) = default;
+  Token& operator=(Token const &) = default;
+  Token(Token&&) = default;
+  Token& operator=(Token&&) = default;
 };
 
 
@@ -37,7 +52,7 @@ struct Token {
  */
 class Lexer {
   std::string ignore_characters_;
-  std::list<std::pair<std::regex, std::string>> token_patterns_;
+  std::list<std::pair<std::regex, Symbol>> token_patterns_;
   std::list<Token> tokens_;
 
 public:

@@ -23,4 +23,5 @@ gtest_unit(
 
 gtest_unit(
   name = "lexer",
+  components = ["symbol"],
 )

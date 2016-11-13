@@ -23,7 +23,7 @@ Lexer::register_pattern_for_token(
   std::string const & pattern,
   std::string const & token)
 {
-  token_patterns_.push_back(std::make_pair(std::regex(pattern), token));
+  token_patterns_.push_back(std::make_pair(std::regex(pattern), Symbol {token}));
 }
 
 
@@ -33,7 +33,7 @@ Lexer::register_pattern_for_token(
 void
 Lexer::register_keyword(std::string const & keyword)
 {
-  token_patterns_.push_back(std::make_pair(std::regex("\\b" + keyword + "\\b"), keyword));
+  token_patterns_.push_back(std::make_pair(std::regex("\\b" + keyword + "\\b"), Symbol {keyword}));
 }
 
 

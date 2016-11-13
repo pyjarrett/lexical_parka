@@ -1,6 +1,7 @@
 #pragma once
 
 #include "grammar.hpp"
+#include "lexer.hpp"
 #include "streams.hpp"
 
 #include <stack>
@@ -8,7 +9,6 @@
 namespace parka {
 
 using Predictive_Parsing_Table = std::map<std::pair<Symbol, Symbol>, Production>;
-using Token = Symbol;
 
 
 bool create_predictive_parsing_table(
@@ -51,28 +51,29 @@ predictive_parse(
 {
   // Prepares starting stack as our program followed by "end of input".
   auto stack = std::stack<typename IterableTokenType::value_type>();
-  stack.push(Symbol::right_end_marker());
-  stack.push(grammar.start_symbol());
+  stack.push(Token(Symbol::right_end_marker()));
+  stack.push(Token(grammar.start_symbol()));
 
 #define error(err) std::cerr << "Encountered Error:" #err "\n"; return;
 
   auto X = stack.top();
   auto next_token_it = tokens.begin();
-  
+
   // Push the start symbol onto the stack followed by the right end marker ($)
-  while (X != Symbol::right_end_marker()) {
-    auto lookup = std::make_pair(X, *next_token_it);
+  while (X.symbol != Symbol::right_end_marker()) {
+    auto lookup = std::make_pair(X.symbol, next_token_it->symbol);
 
     // Next input is terminal matching stack top.
-    if (X == *next_token_it) {
-      visitor(*next_token_it);
+    if (X.symbol == next_token_it->symbol) {
+      X.lexeme = next_token_it->lexeme;
+      visitor(next_token_it->symbol);
       stack.pop();
 
       // Go to next input.
       ++next_token_it;
     }
-    else if (grammar.is_terminal(X)) {
-      std::cout << "predictive_parse[error at unmapped terminal]" << X << std::endl;
+    else if (grammar.is_terminal(X.symbol)) {
+      std::cout << "predictive_parse[error at unmapped terminal]" << X.symbol << std::endl;
       error("Terminal!");
     }
     // if symbol not found, error
@@ -87,7 +88,7 @@ predictive_parse(
       // Push Yk, Y(k-1), Y(k-2), ... Y1
       for (auto it = ppt.at(lookup).second.rbegin(); it != ppt.at(lookup).second.rend(); ++it) {
         if (*it != Symbol::empty()) {
-          stack.push(*it);
+          stack.push(Token {*it, ""});
         }
       }
     }
