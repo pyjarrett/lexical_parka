@@ -10,7 +10,7 @@ def gtest_unit(name, deps=[], components=[], srcs=[],
     name = name + "_test",
     deps = deps + ["@gtest//:lib"],
     srcs = srcs + [name + "_ut.cpp"],
-    copts = copts + ["-Wall", "-Werror", "-Iexternal/gtest/include", "-std=c++14"],
+    copts = copts + ["-Wall", "-Wextra", "-Iexternal/gtest/include", "-std=c++14"],
     size = size,
 
     # Ensure we get colorized output from bazel.
