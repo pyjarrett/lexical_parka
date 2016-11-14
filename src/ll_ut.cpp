@@ -101,7 +101,7 @@ TEST(Simple_List, Production_Printer_Test) {
   Lexer lexer;
   lexer.register_pattern_for_token("[(]", "(");
   lexer.register_pattern_for_token("[)]", ")");
-  lexer.register_pattern_for_token("[a-zA-Z0-9+\\-*/_]+", "atom");
+  lexer.register_pattern_for_token("[a-zA-Z0-9+*/_\\-]+", "atom");
   lexer.lex("(+ 1 2 3)");
 
   std::vector<Token> tokens;
