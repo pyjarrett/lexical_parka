@@ -16,11 +16,11 @@ gtest_unit(
 
 gtest_unit(
   name = "ll",
-  components = ["ast",
-                "symbol",
+  components = ["grammar",
+                "lexer",
+                "parse_tree",
                 "streams",
-                "grammar",
-                "lexer"],
+                "symbol"],
   srcs = ["regex.hpp",
           "sample_grammar_test_fixtures.hpp",
           "string.hpp"],
