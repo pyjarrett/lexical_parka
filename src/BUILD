@@ -18,7 +18,7 @@ gtest_unit(
                 "streams",
                 "grammar",
                 "lexer"],
-  srcs = ["sample_grammar_test_fixtures.hpp"],
+  srcs = ["sample_grammar_test_fixtures.hpp", "ast.hpp"],
 )
 
 gtest_unit(

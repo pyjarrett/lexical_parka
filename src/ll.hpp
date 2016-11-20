@@ -96,4 +96,71 @@ predictive_parse(
   }
 #undef error
 }
+
+
+template <
+    typename Iterable_Token_Type
+  , typename Parse_Tree_Builder>
+auto
+predictive_parse_into_parse_tree(
+    Predictive_Parsing_Table const & ppt
+  , Grammar const & grammar
+  , Iterable_Token_Type & tokens
+  , Parse_Tree_Builder & builder)
+-> typename Parse_Tree_Builder::value_type
+{
+  // Prepares starting stack as our program followed by "end of input".
+  auto stack = std::stack<typename Parse_Tree_Builder::value_type>();
+  auto parse_tree_root = builder.create_node(Token(grammar.start_symbol()));
+
+  stack.push(builder.create_node(Token(Symbol::right_end_marker())));
+  stack.push(parse_tree_root);
+
+#define error(err) std::cerr << "Encountered Error:" #err "\n"; return nullptr;
+
+  auto X = stack.top();
+  auto next_token_it = tokens.begin();
+
+  // Push the start symbol onto the stack followed by the right end marker ($)
+  while (X->token.symbol != Symbol::right_end_marker()) {
+    auto lookup = std::make_pair(X->token.symbol, next_token_it->symbol);
+
+    // Next input is terminal matching stack top.
+    if (X->token.symbol == next_token_it->symbol) {
+      X->token.lexeme = next_token_it->lexeme;
+      stack.pop();
+
+      // Go to next input.
+      ++next_token_it;
+    }
+    else if (grammar.is_terminal(X->token.symbol)) {
+      std::cerr << "predictive_parse[error at unmapped terminal]" << X->token.symbol << std::endl;
+      error("Terminal!");
+    }
+    // if symbol not found, error
+    else if (ppt.count(lookup) == 0) {
+      error("No production found");
+    }
+    // if production
+    else if (ppt.count(lookup) > 0) {
+      stack.pop();
+
+      // Push Yk, Y(k-1), Y(k-2), ... Y1
+      auto body = ppt.at(lookup).second;
+      for (auto it = body.rbegin(); it != body.rend(); ++it) {
+        if (*it != Symbol::empty()) {
+          auto node = builder.create_node(Token(*it));
+
+          // Insert into children at index 0 to undo reverse effects of pushing
+          // symbols in inverse order of the production.
+          X->children.insert(begin(X->children), node);
+          stack.push(node);
+        }
+      }
+    }
+    X = stack.top();
+  }
+  return parse_tree_root;
+#undef error
+}
 } // namespace parka

@@ -114,6 +114,33 @@ TEST(Simple_List, Production_Printer_Test) {
 }
 
 
+#include "ast.hpp"
+#include <iostream>
+TEST(Simple_List, Parse_Tree_Creation) {
+  Grammar simple_lisp;
+  simple_lisp.set_alternatives("s-exp"_sym, {"("_sym + "param_list"_sym + ")"_sym});
+  simple_lisp.set_alternatives("param_list"_sym, "atom"_sym + "param_list"_sym | "s-exp"_sym | Symbol::empty());
+
+  Predictive_Parsing_Table parsing_table;
+  ASSERT_TRUE(create_predictive_parsing_table(simple_lisp, &parsing_table));
+
+  Lexer lexer;
+  lexer.register_pattern_for_token("[(]", "(");
+  lexer.register_pattern_for_token("[)]", ")");
+  lexer.register_pattern_for_token("[a-zA-Z0-9+*/_-]+", "atom");
+  lexer.lex("(+ 1 2 (* 3 4))");
+
+  std::vector<Token> tokens;
+  while (lexer.has_next_token()) {
+    tokens.push_back(lexer.next_token());
+  }
+
+  Lisp_Parse_Tree_Builder builder;
+  auto root = predictive_parse_into_parse_tree(parsing_table, simple_lisp, tokens, builder);
+  ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 param_list ) )");
+}
+
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
