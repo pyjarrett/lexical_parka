@@ -1,13 +1,12 @@
 #pragma once
 
-#include <iostream>
+#include "string.hpp"
+
 #include <set>
-#include <string>
 #include <vector>
 
 namespace parka {
 
-using std::string;
 using std::vector;
 
 class Symbol;
@@ -64,7 +63,7 @@ public:
 };
 
 
-// In line creation of grammer helpers.
+// In line creation of grammar helpers.
 Symbol operator"" _sym(char const * symbol, unsigned long);
 Symbol_String operator+(Symbol_String const & lhs, Symbol_String const & rhs);
 Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String const & rhs);

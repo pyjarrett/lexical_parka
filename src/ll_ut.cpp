@@ -3,13 +3,11 @@
 #include "grammar.hpp"
 #include "ll.hpp"
 #include "streams.hpp"
+#include "string.hpp"
 #include "symbol.hpp"
 using namespace parka;
 
 #include "sample_grammar_test_fixtures.hpp"
-
-#include <algorithm>
-#include <utility>
 
 
 TEST(Predictive_Parser_Table_Test, Simple_Grammar) {
@@ -66,7 +64,7 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, Production_Printer_Test) {
     , Token("id"_sym, "c")
     , Token(Symbol::right_end_marker())};
 
-  std::string expected = "E -> T E'\n"
+  string expected = "E -> T E'\n"
     "T -> F T'\n"
     "F -> id\n"
     "Matched: id\n"
@@ -82,7 +80,7 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, Production_Printer_Test) {
     "Matched: id\n"
     "T' -> empty\n"
     "E' -> empty\n";
-  std::stringstream parse_output;
+  stringstream parse_output;
   Predictive_Parse_Print_Visitor printVisitor(parse_output);
   predictive_parse(parsing_table, grammar, tokens, printVisitor);
   ASSERT_EQ(expected, parse_output.str());
@@ -115,7 +113,6 @@ TEST(Simple_List, Production_Printer_Test) {
 
 
 #include "ast.hpp"
-#include <iostream>
 TEST(Simple_List, Parse_Tree_Creation) {
   Grammar simple_lisp;
   simple_lisp.set_alternatives("s-exp"_sym, {"("_sym + "param_list"_sym + ")"_sym});
@@ -138,6 +135,8 @@ TEST(Simple_List, Parse_Tree_Creation) {
   Lisp_Parse_Tree_Builder builder;
   auto root = predictive_parse_into_parse_tree(parsing_table, simple_lisp, tokens, builder);
   ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 ) )");
+
+  root->print(IO::out);
 }
 
 

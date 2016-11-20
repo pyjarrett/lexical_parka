@@ -21,10 +21,10 @@ bool create_predictive_parsing_table(
  */
 class Predictive_Parse_Print_Visitor
 {
-  std::ostream & stream_;
+  ostream & stream_;
 
 public:
-  Predictive_Parse_Print_Visitor(std::ostream & os) : stream_(os) {}
+  Predictive_Parse_Print_Visitor(ostream & os) : stream_(os) {}
   void operator()(Symbol const & terminal)
   {
     stream_ << "Matched: " << terminal << '\n';

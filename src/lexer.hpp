@@ -1,11 +1,12 @@
 #pragma once
 
+#include "regex.hpp"
+#include "streams.hpp"
+#include "string.hpp"
 #include "symbol.hpp"
 
 #include <iosfwd>
 #include <list>
-#include <regex>
-#include <string>
 
 namespace parka {
 
@@ -16,10 +17,10 @@ struct Token {
   Symbol symbol;
 
   /// The contents of the matched pattern.
-  std::string lexeme;
+  string lexeme;
 
   explicit Token(Symbol const & symbol) : symbol(symbol), lexeme(symbol.repr()) {}
-  Token(Symbol const & symbol, std::string const & lexeme) : symbol(symbol), lexeme(lexeme) {}
+  Token(Symbol const & symbol, string const & lexeme) : symbol(symbol), lexeme(lexeme) {}
 
   // Per "Modern C++" item 17.
   // Having "null" tokens isn't the worst thing here,
@@ -51,18 +52,18 @@ struct Token {
  * continue lexing, but only after it finds an matched and ignored pattern.
  */
 class Lexer {
-  std::string ignore_characters_;
-  std::list<std::pair<std::regex, Symbol>> token_patterns_;
+  string ignore_characters_;
+  std::list<std::pair<regex, Symbol>> token_patterns_;
   std::list<Token> tokens_;
 
 public:
   Lexer();
 
-  void register_pattern_for_token(std::string const & pattern, std::string const & token_name);
-  void register_keyword(std::string const & keyword);
+  void register_pattern_for_token(string const & pattern, string const & token_name);
+  void register_keyword(string const & keyword);
 
-  void lex(std::string const & str);
-  void lex(std::istream & input);
+  void lex(string const & str);
+  void lex(istream & input);
 
   bool has_next_token() const;
   Token next_token();

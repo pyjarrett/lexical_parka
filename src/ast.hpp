@@ -1,6 +1,8 @@
 #pragma once
 
 #include "lexer.hpp"
+#include "streams.hpp"
+#include "string.hpp"
 
 #include <memory>
 #include <vector>
@@ -35,11 +37,11 @@ public:
   Parse_Tree_Node();
   virtual ~Parse_Tree_Node();
 
-  void print(std::ostream& os, size_t depth=0);
-  std::string yield() const;
+  void print(ostream& os, size_t depth=0);
+  string yield() const;
 
 private:
-  void yield_helper(std::ostream & os) const;
+  void yield_helper(ostream & os) const;
 
 public:
   // Should be only using pointers to Parse_Tree_Node.
