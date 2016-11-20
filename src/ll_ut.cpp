@@ -137,7 +137,7 @@ TEST(Simple_List, Parse_Tree_Creation) {
 
   Lisp_Parse_Tree_Builder builder;
   auto root = predictive_parse_into_parse_tree(parsing_table, simple_lisp, tokens, builder);
-  ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 param_list ) )");
+  ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 ) )");
 }
 
 

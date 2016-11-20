@@ -145,16 +145,30 @@ predictive_parse_into_parse_tree(
     else if (ppt.count(lookup) > 0) {
       stack.pop();
 
-      // Push Yk, Y(k-1), Y(k-2), ... Y1
-      auto body = ppt.at(lookup).second;
-      for (auto it = body.rbegin(); it != body.rend(); ++it) {
-        if (*it != Symbol::empty()) {
-          auto node = builder.create_node(Token(*it));
+      auto & body = ppt.at(lookup).second;
 
-          // Insert into children at index 0 to undo reverse effects of pushing
-          // symbols in inverse order of the production.
-          X->children.insert(begin(X->children), node);
-          stack.push(node);
+      // Remove non-terminals producing empty productions from the parse tree.
+      // WARNING: This doesn't handle a propagating case:
+      // A -> B -> C -> empty
+      if (body.size() == 1 && body[0] == Symbol::empty()) {
+        if (!X->parent.expired()) {
+          auto parent = X->parent.lock();
+          auto loc_of_x = std::find(parent->children.begin(), parent->children.end(), X);
+          parent->children.erase(loc_of_x);
+        }
+      }
+      else {
+        // Push Yk, Y(k-1), Y(k-2), ... Y1
+        for (auto it = body.rbegin(); it != body.rend(); ++it) {
+          if (*it != Symbol::empty()) {
+            auto node = builder.create_node(Token(*it));
+            node->parent = X;
+
+            // Insert into children at index 0 to undo reverse effects of pushing
+            // symbols in inverse order of the production.
+            X->children.insert(begin(X->children), node);
+            stack.push(node);
+          }
         }
       }
     }
