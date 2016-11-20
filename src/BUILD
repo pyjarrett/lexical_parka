@@ -14,11 +14,12 @@ gtest_unit(
 
 gtest_unit(
   name = "ll",
-  components = ["symbol",
+  components = ["ast",
+                "symbol",
                 "streams",
                 "grammar",
                 "lexer"],
-  srcs = ["sample_grammar_test_fixtures.hpp", "ast.hpp"],
+  srcs = ["sample_grammar_test_fixtures.hpp"],
 )
 
 gtest_unit(
