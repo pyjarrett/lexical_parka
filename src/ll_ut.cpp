@@ -132,7 +132,7 @@ TEST(Simple_List, Parse_Tree_Creation) {
     tokens.push_back(lexer.next_token());
   }
 
-  Lisp_Parse_Tree_Builder builder;
+  Basic_Parse_Tree_Builder builder;
   auto root = predictive_parse_into_parse_tree(parsing_table, simple_lisp, tokens, builder);
   ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 ) )");
 

@@ -52,7 +52,7 @@ public:
 };
 
 
-class Lisp_Parse_Tree_Builder
+class Basic_Parse_Tree_Builder
 {
 public:
   using value_type = std::shared_ptr<Parse_Tree_Node>;
