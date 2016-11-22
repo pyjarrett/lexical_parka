@@ -122,19 +122,19 @@ predictive_parse_into_parse_tree(
   auto next_token_it = tokens.begin();
 
   // Push the start symbol onto the stack followed by the right end marker ($)
-  while (X->token.symbol != Symbol::right_end_marker()) {
-    auto lookup = std::make_pair(X->token.symbol, next_token_it->symbol);
+  while (X->token().symbol != Symbol::right_end_marker()) {
+    auto lookup = std::make_pair(X->token().symbol, next_token_it->symbol);
 
     // Next input is terminal matching stack top.
-    if (X->token.symbol == next_token_it->symbol) {
-      X->token.lexeme = next_token_it->lexeme;
+    if (X->token().symbol == next_token_it->symbol) {
+      X->set_lexeme(next_token_it->lexeme);
       stack.pop();
 
       // Go to next input.
       ++next_token_it;
     }
-    else if (grammar.is_terminal(X->token.symbol)) {
-      std::cerr << "predictive_parse[error at unmapped terminal]" << X->token.symbol << std::endl;
+    else if (grammar.is_terminal(X->token().symbol)) {
+      std::cerr << "predictive_parse[error at unmapped terminal]" << X->token().symbol << std::endl;
       error("Terminal!");
     }
     // if symbol not found, error
@@ -147,30 +147,24 @@ predictive_parse_into_parse_tree(
 
       auto & body = ppt.at(lookup).second;
 
-      // Remove non-terminals producing empty productions from the parse tree.
-      // WARNING: This doesn't handle a propagating case:
-      // A -> B -> C -> empty
-      if (body.size() == 1 && body[0] == Symbol::empty()) {
-        if (!X->parent.expired()) {
-          auto parent = X->parent.lock();
-          auto loc_of_x = std::find(parent->children.begin(), parent->children.end(), X);
-          parent->children.erase(loc_of_x);
-        }
-      }
-      else {
-        // Push Yk, Y(k-1), Y(k-2), ... Y1
-        for (auto it = body.rbegin(); it != body.rend(); ++it) {
-          if (*it != Symbol::empty()) {
-            auto node = builder.create_node(Token(*it));
-            node->parent = X;
+      // Push Yk, Y(k-1), Y(k-2), ... Y1
+      std::vector<typename Parse_Tree_Builder::value_type> children;
+      for (auto it = body.rbegin(); it != body.rend(); ++it) {
+        auto node = builder.create_node(Token(*it), X);
 
-            // Insert into children at index 0 to undo reverse effects of pushing
-            // symbols in inverse order of the production.
-            X->children.insert(begin(X->children), node);
-            stack.push(node);
-          }
+        // Insert into children at index 0 to undo reverse effects of pushing
+        // symbols in inverse order of the production.
+        children.insert(begin(children), node);
+
+        // Empty symbols cannot be production heads, so they don't need to be
+        // looked for.
+        if (*it != Symbol::empty()) {
+          stack.push(node);
         }
       }
+      // Setting all children at once provides a cleaner interface than
+      // setting individual ones.
+      X->set_children(children);
     }
     X = stack.top();
   }

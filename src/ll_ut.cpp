@@ -91,7 +91,10 @@ TEST_F(Non_Left_Recursive_Add_Multiply_Grammar_Test, Production_Printer_Test) {
 TEST(Simple_List, Production_Printer_Test) {
   Grammar simple_lisp;
   simple_lisp.set_alternatives("s-exp"_sym, {"("_sym + "param_list"_sym + ")"_sym});
-  simple_lisp.set_alternatives("param_list"_sym, "atom"_sym + "param_list"_sym | Symbol::empty());
+  simple_lisp.set_alternatives("param_list"_sym,
+      "atom"_sym + "param_list"_sym
+      | "s-exp"_sym + "param_list"_sym
+      | Symbol::empty());
 
   Predictive_Parsing_Table parsing_table;
   ASSERT_TRUE(create_predictive_parsing_table(simple_lisp, &parsing_table));
@@ -116,7 +119,10 @@ TEST(Simple_List, Production_Printer_Test) {
 TEST(Simple_List, Parse_Tree_Creation) {
   Grammar simple_lisp;
   simple_lisp.set_alternatives("s-exp"_sym, {"("_sym + "param_list"_sym + ")"_sym});
-  simple_lisp.set_alternatives("param_list"_sym, "atom"_sym + "param_list"_sym | "s-exp"_sym | Symbol::empty());
+  simple_lisp.set_alternatives("param_list"_sym,
+      "atom"_sym + "param_list"_sym
+      | "s-exp"_sym + "param_list"_sym
+      | Symbol::empty());
 
   Predictive_Parsing_Table parsing_table;
   ASSERT_TRUE(create_predictive_parsing_table(simple_lisp, &parsing_table));
@@ -125,7 +131,7 @@ TEST(Simple_List, Parse_Tree_Creation) {
   lexer.register_pattern_for_token("[(]", "(");
   lexer.register_pattern_for_token("[)]", ")");
   lexer.register_pattern_for_token("[a-zA-Z0-9+*/_-]+", "atom");
-  lexer.lex("(+ 1 2 (* 3 4))");
+  lexer.lex("(+ 1 2 (* 3 (- 5 6) 7))");
 
   std::vector<Token> tokens;
   while (lexer.has_next_token()) {
@@ -134,9 +140,7 @@ TEST(Simple_List, Parse_Tree_Creation) {
 
   Basic_Parse_Tree_Builder builder;
   auto root = predictive_parse_into_parse_tree(parsing_table, simple_lisp, tokens, builder);
-  ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 4 ) )");
-
-  root->print(IO::out);
+  ASSERT_EQ(root->yield(), "( + 1 2 ( * 3 ( - 5 6 ) 7 ) )");
 }
 
 
