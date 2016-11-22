@@ -1,7 +1,7 @@
 #include "lexer.hpp"
 
-#include <iostream>
-#include <sstream>
+#include "streams.hpp"
+#include "string.hpp"
 
 
 namespace parka {
@@ -20,8 +20,8 @@ Lexer::Lexer()
  */
 void
 Lexer::register_pattern_for_token(
-  std::string const & pattern,
-  std::string const & token)
+  string const & pattern,
+  string const & token)
 {
   token_patterns_.push_back(std::make_pair(std::regex(pattern), Symbol {token}));
 }
@@ -31,29 +31,29 @@ Lexer::register_pattern_for_token(
  * Shorthand for creating a word pattern with a similarly named symbol.
  */
 void
-Lexer::register_keyword(std::string const & keyword)
+Lexer::register_keyword(string const & keyword)
 {
   token_patterns_.push_back(std::make_pair(std::regex("\\b" + keyword + "\\b"), Symbol {keyword}));
 }
 
 
 void
-Lexer::lex(std::string const & str)
+Lexer::lex(string const & str)
 {
-  std::stringstream ss(str);
+  stringstream ss(str);
   lex(ss);
 }
 
 
 void
-Lexer::lex(std::istream & input)
+Lexer::lex(istream & input)
 {
   // Builds a buffer of all our input.
   // TODO: Only buffer a certain amount at a time (e.g. 16K)
   // TODO: Very inefficient, but will work.
-  std::string buffer;
+  string buffer;
   while (input) {
-    std::string next_line;
+    string next_line;
     std::getline(input, next_line);
     buffer.append(next_line);
     buffer.append("\n");

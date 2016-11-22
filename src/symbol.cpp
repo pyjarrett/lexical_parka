@@ -1,7 +1,5 @@
 #include "symbol.hpp"
 
-#include <iostream>
-
 namespace parka {
 
 Symbol

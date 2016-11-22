@@ -1,27 +1,35 @@
 load("//tools:gtest.bzl", "gtest_unit")
 
 gtest_unit(
-    name = "symbol",
-    components = ["streams"],
+  name = "symbol",
+  components = ["streams"],
+  srcs = ["string.hpp"],
 )
 
 gtest_unit(
   name = "grammar",
   components = ["symbol",
                 "streams"],
-  srcs = ["sample_grammar_test_fixtures.hpp"],
+  srcs = ["sample_grammar_test_fixtures.hpp",
+          "string.hpp"],
 )
 
 gtest_unit(
   name = "ll",
-  components = ["symbol",
+  components = ["grammar",
+                "lexer",
+                "parse_tree",
                 "streams",
-                "grammar",
-                "lexer"],
-  srcs = ["sample_grammar_test_fixtures.hpp"],
+                "symbol"],
+  srcs = ["regex.hpp",
+          "sample_grammar_test_fixtures.hpp",
+          "string.hpp"],
 )
 
 gtest_unit(
   name = "lexer",
-  components = ["symbol"],
+  components = ["symbol",
+                "streams"],
+  srcs = ["regex.hpp",
+          "string.hpp"],
 )

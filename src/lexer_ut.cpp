@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
 #include "lexer.hpp"
+#include "streams.hpp"
+#include "string.hpp"
 using namespace parka;
-
-#include <iostream>
 
 
 class Lexer_Test : public ::testing::Test {
 protected:
   void
   ASSERT_FIND_EXPECTED_TOKENS(
-    std::vector<std::pair<std::string, std::string>> & expected,
+    std::vector<std::pair<string, string>> & expected,
     Lexer & lexer)
   {
     Token tk;
@@ -39,7 +39,7 @@ TEST_F(Lexer_Test, Multiple_Integers) {
   lexer.register_pattern_for_token("(-)?([1-9][0-9]*|0)", "integer");
   lexer.lex("123 456 789\n234 -345");
 
-  std::vector<std::pair<std::string, std::string>> expected = {
+  std::vector<std::pair<string, string>> expected = {
     {"integer", "123"},
     {"integer", "456"},
     {"integer", "789"},
@@ -57,7 +57,7 @@ TEST_F(Lexer_Test, Keyword_Identifier_Recognition) {
 
   lexer.lex("for x in list");
 
-  std::vector<std::pair<std::string, std::string>> expected = {
+  std::vector<std::pair<string, string>> expected = {
     {"for", "for"},
     {"identifier", "x"},
     {"in", "in"},
@@ -76,7 +76,7 @@ TEST_F(Lexer_Test, Keywords_As_Part_Of_Identifiers) {
   foreach mine in inner
   )");
 
-  std::vector<std::pair<std::string, std::string>> expected = {
+  std::vector<std::pair<string, string>> expected = {
     {"identifier", "foreach"}, {"identifier", "mine"}, {"in", "in"}, {"identifier", "inner"}};
   ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
@@ -89,7 +89,7 @@ TEST_F(Lexer_Test, Single_Function_Call) {
   lexer.register_pattern_for_token("[)]", ")");
 
   lexer.lex("cos(x)");
-  std::vector<std::pair<std::string, std::string>> expected = {
+  std::vector<std::pair<string, string>> expected = {
     {"identifier", "cos"}, {"(", "("}, {"identifier", "x"}, {")", ")"}};
   ASSERT_FIND_EXPECTED_TOKENS(expected, lexer);
 }
@@ -106,7 +106,7 @@ TEST_F(Lexer_Test, Quoted_String) {
   including a newline."
   "a really pathological case \\"
   )");
-  std::vector<std::pair<std::string, std::string>> expected = {
+  std::vector<std::pair<string, string>> expected = {
     {"quoted_string", "\"word\""},
     {"quoted_string", "\"multiple words\""},
     {"quoted_string", "\"words with something \\\"in quotes\\\"\""},
