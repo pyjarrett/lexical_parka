@@ -32,6 +32,8 @@ find_package(Threads REQUIRED)
 
 include(ExternalProject)
 
+
+# Taken from http://kaizou.org/2014/11/gtest-cmake/
 # Download and install GoogleTest
 ExternalProject_Add(
     gtest
