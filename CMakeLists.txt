@@ -68,6 +68,16 @@ set_target_properties(libgmock PROPERTIES
 include_directories("${source_dir}/googletest/include"
                     "${source_dir}/googlemock/include")
 
+# Raise error levels.
+if (CMAKE_COMPILER_IS_GNUCC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif (CMAKE_COMPILER_IS_GNUCC)
+if (MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+endif (MSVC)
+
+
+
 include(CTest)
 
 set (CMAKE_CXX_STANDARD 14)
