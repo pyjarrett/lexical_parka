@@ -50,6 +50,7 @@ predictive_parse(
   , VisitorFunctor & visitor)
 {
   // Prepares starting stack as our program followed by "end of input".
+  // Push the start symbol onto the stack followed by the right end marker ($)
   auto stack = std::stack<typename IterableTokenType::value_type>();
   stack.push(Token(Symbol::right_end_marker()));
   stack.push(Token(grammar.start_symbol()));
@@ -59,7 +60,6 @@ predictive_parse(
   auto X = stack.top();
   auto next_token_it = tokens.begin();
 
-  // Push the start symbol onto the stack followed by the right end marker ($)
   while (X.symbol != Symbol::right_end_marker()) {
     auto lookup = std::make_pair(X.symbol, next_token_it->symbol);
 
