@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (LexicalParka)
 
+# Build "Release" if unspecified.
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -48,6 +49,24 @@ add_custom_target(check
     DEPENDS ALL_BUILD
     )
 
+include(CTest)
+
+# Creates and adds a CTest executable for GTest.
+#
+# Implicitly adds a test_name.cpp to the list of sources
+#
+# Format:
+#   unit_test(NAME test_name SOURCES a.cpp b.cpp)
+function(unit_test)
+set(options "")
+set(oneValueArgs NAME)
+set(multiValueArgs SOURCES)
+cmake_parse_arguments(UTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+add_executable("${UTEST_NAME}" "${UTEST_SOURCES}")
+target_link_libraries(${UTEST_NAME} gtest_main)
+add_test(NAME "${UTEST_NAME}" COMMAND "${UTEST_NAME}" --gtest_color=yes)
+endfunction()
+
 # Raise error levels.
 if (CMAKE_COMPILER_IS_GNUCC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -55,8 +74,6 @@ endif (CMAKE_COMPILER_IS_GNUCC)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 endif (MSVC)
-
-include(CTest)
 
 set (CMAKE_CXX_STANDARD 14)
 add_subdirectory(src/)
