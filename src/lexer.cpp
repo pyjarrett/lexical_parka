@@ -66,7 +66,7 @@ Lexer::lex(istream & input)
   // Continue until end of buffer reached.
   while (current != eof) {
     // Finds next whitespace or end of input.
-    while (is_ignored(*current) && current != eof) {
+    while (current != eof && is_ignored(*current)) {
       ++current;
     }
 

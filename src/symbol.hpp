@@ -64,7 +64,7 @@ public:
 
 
 // In line creation of grammar helpers.
-Symbol operator"" _sym(char const * symbol, unsigned long);
+Symbol operator"" _sym(char const * symbol, size_t);
 Symbol_String operator+(Symbol_String const & lhs, Symbol_String const & rhs);
 Symbol_String_Alternatives operator|(Symbol_String const & lhs, Symbol_String const & rhs);
 Symbol_String_Alternatives operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs)
