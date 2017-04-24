@@ -1,3 +1,5 @@
 # Ignores bazel build symlinks
 bazel-*
 *.swp
+build/
+doc/

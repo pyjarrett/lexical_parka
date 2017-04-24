@@ -63,13 +63,21 @@ function(unit_test)
   set(multiValueArgs SOURCES)
   cmake_parse_arguments(UTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
   add_executable("${UTEST_NAME}" ${UTEST_NAME}.cpp "${UTEST_SOURCES}")
-  target_link_libraries(${UTEST_NAME} gtest_main)
+
+  # Generate coverage data only under GCC 
+  if (CMAKE_BUILD_TYPE MATCHES Debug AND CMAKE_COMPILER_IS_GNUCC)
+    target_link_libraries(${UTEST_NAME} gtest_main pthread gcov)
+    set_target_properties(${UTEST_NAME} PROPERTIES COMPILE_FLAGS "${unit_test_compiler_flags} -fprofile-arcs -ftest-coverage")
+    set_target_properties(${UTEST_NAME} PROPERTIES LINK_FLAGS "${unit_test_compiler_flags} -fprofile-arcs -ftest-coverage")
+  else()
+    target_link_libraries(${UTEST_NAME} gtest_main)
+  endif()
   add_test(NAME "${UTEST_NAME}" COMMAND "${UTEST_NAME}" --gtest_color=yes)
 endfunction()
 
 # Raise error levels.
 if (CMAKE_COMPILER_IS_GNUCC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif (CMAKE_COMPILER_IS_GNUCC)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
