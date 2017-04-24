@@ -62,7 +62,7 @@ function(unit_test)
   set(oneValueArgs NAME)
   set(multiValueArgs SOURCES)
   cmake_parse_arguments(UTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-  add_executable("${UTEST_NAME}" ${UTEST_NAME}.cpp "${UTEST_SOURCES}")
+  add_executable("${UTEST_NAME}" ${UTEST_NAME}.cpp ${UTEST_SOURCES})
 
   # Generate coverage data only under GCC 
   if (CMAKE_BUILD_TYPE MATCHES Debug AND CMAKE_COMPILER_IS_GNUCC)
