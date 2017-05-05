@@ -1,6 +1,15 @@
 #include "streams.hpp"
 
-namespace context_free {
+namespace parka {
+
+
+std::istream & IO_Streams<std::istream::char_type>::in = std::cin;
+std::ostream & IO_Streams<std::ostream::char_type>::err = std::cerr;
+std::ostream & IO_Streams<std::ostream::char_type>::out = std::cout;
+
+std::wistream & IO_Streams<std::wistream::char_type>::in = std::wcin;
+std::wostream & IO_Streams<std::wostream::char_type>::err = std::wcerr;
+std::wostream & IO_Streams<std::wostream::char_type>::out = std::wcout;
 
 template <typename IterableType>
 ostream &
@@ -9,7 +18,7 @@ output_separated_elements(
   IterableType const & iterable,
   string const & separator)
 {
-  string current_separator = "";
+  string current_separator("");
   for (auto item : iterable) {
     os << current_separator << item;
     current_separator = separator;
@@ -47,4 +56,4 @@ ostream & operator<<(
   return output_separated_elements(os, symbol_set, " ");
 }
 
-} // namespace context_free
+} // namespace parka

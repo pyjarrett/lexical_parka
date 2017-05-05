@@ -3,7 +3,7 @@
 #include "streams.hpp"
 #include <utility>
 
-namespace context_free {
+namespace parka {
   Grammar::Grammar()
   : start_symbol_(Symbol::empty())
   {
@@ -12,8 +12,8 @@ namespace context_free {
   Symbol_String_Alternatives
   Grammar::operator[](Symbol const & symbol) const
   {
-    auto it = productions.find(symbol);
-    if (it != productions.end()) {
+    auto it = productions_.find(symbol);
+    if (it != productions_.end()) {
       return (it->second);
     }
     return Symbol_String_Alternatives();
@@ -24,7 +24,7 @@ namespace context_free {
     Symbol const & head,
     Symbol_String_Alternatives const & alternatives)
   {
-    productions[head] = alternatives;
+    productions_[head] = alternatives;
 
     if (start_symbol_ == Symbol::empty()) {
       start_symbol_ = head;
@@ -70,7 +70,7 @@ namespace context_free {
     vector<Production> current_possibles;
 
     // Initially populate the possible list with the grammar's productions.
-    for (auto const & production : productions) {
+    for (auto const & production : productions_) {
       for (auto const & body : production.second) {
         current_possibles.push_back({production.first, body});
       }
@@ -114,7 +114,7 @@ namespace context_free {
 
   bool
   Grammar::is_terminal(Symbol const & symbol) const {
-    return productions.find(symbol) == productions.end();
+    return productions_.find(symbol) == productions_.end();
   }
 
   void
@@ -122,7 +122,7 @@ namespace context_free {
   {
     // Add all terminal symbols once and head of time since there aren't
     // production rules for them.
-    for (auto const & production : productions) {
+    for (auto const & production : productions_) {
       for (auto const & alternative : production.second) {
         for (auto const & body_symbol : alternative) {
             if (is_terminal(body_symbol)) {
@@ -149,7 +149,7 @@ namespace context_free {
     while (progress_made) {
       progress_made = false;
 
-      for (auto const & production : productions) {
+      for (auto const & production : productions_) {
         auto const & head = production.first;
 
         // X can produce empty, so add it to FIRST
@@ -228,7 +228,7 @@ namespace context_free {
     bool progress_made = true;
     while (progress_made) {
       progress_made = false;
-      for (auto const & production : productions) {
+      for (auto const & production : productions_) {
         auto const & head = production.first;
         for (auto const & body : production.second) {
           progress_made = progress_made || add_production_to_follow(head, body, result);
@@ -279,83 +279,5 @@ namespace context_free {
       progress_made = progress_made || (follow_b.size() != size_before_adding_first_beta);
     }
     return progress_made;
-  }
-
-
-  /**
-   * Creates a predictive parsing table (for a recursive-decent parser with no
-   * backtracking) if possible for a LL(1) grammar.
-   *
-   * \param parsing_table the parsing table to write the result to.  The state
-   * of the parsing table is undefined if parsing fails.  Passing by pointer,
-   * rather than reference helps make it clearer to clients that they should
-   * expect the parsing table to modified.
-   *
-   * \todo My Rust programming is getting to me as I feel this would be much
-   * better implemented using an Optional<>.  In short, I am NOT HAPPY with how
-   * this is implemented currently, and will revisit it in the future.  Perhaps
-   * exceptions would simplify error handling.  Also, making "productions"
-   * public on the grammar would allow this member function to become a free
-   * function.  Implementing this function as a "pure" function would also
-   * improve it.  I also had to include "steams.hpp" for output of symbols,
-   * which isn't required by the rest of this source file, which also indicates
-   * a malady here.
-   */
-  bool
-  Grammar::create_predictive_parsing_table(Predictive_Parsing_Table * parsing_table) const
-  {
-    if (parsing_table == nullptr) {
-      return false;
-    }
-
-    for (auto const & production : productions) {
-      auto const head = production.first;
-
-      for (auto const & alternative : production.second) {
-        // Local macro to simplify error handling and reporting.
-#define fail_if_insert_over_existing_mapping(elem, some_production)   \
-        if (parsing_table->count(Symbol_Pair(head, elem)) != 0) {     \
-          std::cerr << "Ambiguity creating predicting parser table: " \
-          << '[' << head << ',' << elem << "] already mapped to "     \
-          << (*parsing_table)[Symbol_Pair(head,elem)].first << " -> " \
-          << '"' << (*parsing_table)[Symbol_Pair(head,elem)].second << '"' \
-          << " but tried to insert " << some_production.first << " -> "    \
-          << '"' << some_production.second << '"' << '\n';            \
-          return false;                                               \
-        }
-
-        auto const current_production = Production(head, alternative);
-
-        // Add A -> alpha for each terminal in a.
-        // This was an errata in the Dragon Book
-        // using first(alternative) instead of first(head), though this could
-        // just be a unclear interpretation of the text.
-        auto const first_alt = first(alternative);
-        for (auto const a : first_alt) {
-          if (a != Symbol::empty()) {
-            fail_if_insert_over_existing_mapping(a, current_production);
-            (*parsing_table)[Symbol_Pair(head, a)] = current_production;
-          }
-        }
-
-        auto const follow_a = follow(head);
-        // Adds A -> alpha for follow and right end marker (if applicable)
-        if (first_alt.count(Symbol::empty()) > 0) {
-          for (auto const b : follow_a) {
-            if (b != Symbol::empty() && b != Symbol::right_end_marker()) {
-              fail_if_insert_over_existing_mapping(b, current_production);
-              (*parsing_table)[Symbol_Pair(head, b)] = current_production;
-            }
-          }
-
-          if (follow_a.count(Symbol::right_end_marker()) > 0) {
-            fail_if_insert_over_existing_mapping(Symbol::right_end_marker(), current_production);
-            (*parsing_table)[Symbol_Pair(head, Symbol::right_end_marker())] = current_production;
-          }
-        }
-#undef fail_if_insert_over_existing_mapping
-      }
-    }
-    return true;
   }
 }

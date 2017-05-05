@@ -2,7 +2,7 @@
 
 #include "symbol.hpp"
 #include "streams.hpp"
-using namespace context_free;
+using namespace parka;
 
 TEST(First_Test, Examples) {
   Symbol e = "E"_sym;

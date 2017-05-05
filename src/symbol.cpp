@@ -1,8 +1,6 @@
 #include "symbol.hpp"
 
-#include <iostream>
-
-namespace context_free {
+namespace parka {
 
 Symbol
 Symbol::empty() {
@@ -17,13 +15,14 @@ Symbol::right_end_marker() {
 
 
 Symbol::operator Symbol_String() const {
-  return (Symbol_String) {*this};
+  Symbol_String result{ *this };
+  return result;
 }
 
 
 // In Line grammar creation
 Symbol
-operator"" _sym(char const * symbol, unsigned long) {
+operator"" _sym(char const * symbol, size_t) {
   return Symbol(symbol);
 }
 
@@ -51,4 +50,4 @@ operator|(Symbol_String_Alternatives const & lhs, Symbol_String const & rhs) {
   return result;
 }
 
-} // namespace context_free
+} // namespace parka
